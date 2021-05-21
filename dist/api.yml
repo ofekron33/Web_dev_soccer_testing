@@ -62,6 +62,7 @@ paths:
       responses:
         "200":
           description: "the user has ben successfully logged out"
+
   /league/getDetails:
     get:
       tags:
@@ -78,6 +79,8 @@ paths:
                   $ref: "#/components/schemas/League"
         "400":
           description: wrong input parameters
+
+
   /users/favoritePlayers:
     get:
       tags:
@@ -116,6 +119,7 @@ paths:
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
+          
   /teams/teamFullDetails/{teamId}:
     get:
       summary: get full deatils about a team
