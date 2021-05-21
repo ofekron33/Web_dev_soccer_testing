@@ -13,5 +13,14 @@ router.get("/playerFullDetails/:playerid", async (req, res, next) => {
     }
   });
   
+router.get("/SearchPlayerByName/:playername", async (req, res, next) => {
+    try {
+      const player_details = await players_utils.SearchPlayerByName(req.params.playername);
+      res.send(player_details);
+    } catch (error) {
+      next(error);  
+    }
+  });
+  
 
 module.exports = router;
