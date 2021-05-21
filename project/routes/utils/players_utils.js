@@ -56,25 +56,52 @@ async function getPlayersInfo(players_ids_list) {
   return extractRelevantPlayerData(players_info);
 }
 
-function extractRelevantPlayerData(players_info) {
-  return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
-    const { name } = player_info.data.data.team.data;
-    return {
-      name: fullname,
-      image: image_path,
-      position: position_id,
-      team_name: name,
-    };
-  });
+function extractRelevantPlayersData(players_info) {
+  const Player_arr=[];
+  players_info.data.data.forEach((element) => {
+    if (!element.team)
+    {
+      var tmp=null;
+    }
+    else {
+      var tmp=element.team.data.name
+    }
+      var obj= {
+        name: element.fullname,
+        position: element.position_id,
+        image: element.image_path,
+        team_name: tmp
+        }
+        Player_arr.push(obj);
+    })
+  
+   
+   return Player_arr;
 }
-
 async function getPlayersByTeam(team_id) {
   let player_ids_list = await getPlayerIdsByTeam(team_id);
   let players_info = await getPlayersInfo(player_ids_list);
   return players_info;
 }
 
+async function SearchPlayerByName(name) {
+  const player = await axios.get(`${api_domain}/players/search/${name}`,
+  {
+    params: {
+      include: "team",
+      api_token: process.env.api_token,
+    },
+  }
+);
+// const players_ids=[];
+// for (var key in p.data.data) {
+//   players_ids.push(extractRelevantPlayerData(key));
+// }
+return extractRelevantPlayersData(player);
+}
+
+
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayerDetail = getPlayerDetail;
+exports.SearchPlayerByName=SearchPlayerByName;
