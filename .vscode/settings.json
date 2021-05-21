@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "mssqlOptions": {
+                "appName": "SQLTools",
+                "useUTC": true,
+                "encrypt": true
+            },
+            "previewLimit": 50,
+            "server": " soccer-server.database.windows.net",
+            "port": 1433,
+            "driver": "MSSQL",
+            "database": "SoccerDB",
+            "username": "AdminSoccer",
+            "password": "8L3cVMd@Mzhj@uy",
+            "name": "DB"
+        }
+    ]
+}

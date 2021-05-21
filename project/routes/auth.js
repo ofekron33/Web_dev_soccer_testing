@@ -56,7 +56,6 @@ router.post("/Login", async (req, res, next) => {
     next(error);
   }
 });
-
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
