@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/daniel-izmaylov/FootballSite/1.0.0
+- url: http://localhost:3000/
   description: SwaggerHub API Auto Mocking
 tags:
 - name: admins
@@ -76,24 +76,39 @@ paths:
           description: Need to login
           
           
-  /game:
+  /game: #changed
     post:
       tags:
       - Games
       summary: Add a new game to the server
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Game'
-        required: true
+              type: object
+              properties:
+                gameDate:
+                  type: string
+                  example: 19941030
+                homeTeam:
+                  type: integer
+                  example: 132
+                awayTeam:
+                  type: integer
+                  example: 123
+                refereesID:
+                  type: integer
+                  example: 101
+                stageID:
+                  type: integer
+                  example: 6
+
       responses:
         "201":
-          description: Match added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Game'
+          description: Game created
+        "409":
+          description: Game already in system
         "400":
           description: something went wrong
           
@@ -127,6 +142,7 @@ paths:
         explode: false
         schema:
           type: string
+        example: 18
       responses:
         "200":
           description: match
@@ -136,7 +152,7 @@ paths:
                 $ref: '#/components/schemas/Game'
         "400":
           description: something went wrong
-    put:
+    put: #change
       tags:
       - Games
       summary: update game results
@@ -148,12 +164,18 @@ paths:
         explode: false
         schema:
           type: string
+        example: 18
       requestBody:
         description: game results
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body'
+              type: object
+              properties:
+                homeScore:
+                  type: integer
+                awayScore:
+                  type: integer
         required: true
       responses:
         "200":
@@ -164,6 +186,37 @@ paths:
           
           
   /game/{gameId}/events/:
+    get: #CHANGED
+      tags:
+      - Games
+      summary: return all teh event of the game
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 18 
+        
+      responses:
+        "200":
+          description: OK. recipes on the way.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Leauge'
+
+        "204":
+          description: Bad, No Event was found.
+        "406":
+          description: Game Not Found.
+        "400":
+          description: Bad Request. 
+        
     post:
       tags:
       - Games
@@ -176,17 +229,18 @@ paths:
         explode: false
         schema:
           type: string
+        example: 18
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
                 $ref: '#/components/schemas/Event'
         required: true
       responses:
-        "200":
-          description: success
+        "201":
+          description: event added sucssfuly.
+        "406":
+          description: Game Not Found.
         "400":
           description: Bad Request.
   /coach/{coachId}:
@@ -313,7 +367,7 @@ paths:
       - Players
       summary: Search player by name
       parameters:
-      - name: player_name
+      - name: playerName
         in: path
         required: true
         style: simple
@@ -545,6 +599,9 @@ paths:
           description: success
         "400":
           description: somting went wrong
+          
+          
+          
   /homepage/favoritematches/{gameId}:
     delete:
       tags:
@@ -693,7 +750,7 @@ components:
       properties:
         gameDate:
           type: string
-          example: 13.5.2021
+          example: 19941030
         homeTeam:
           $ref: '#/components/schemas/Team'
         awayTeam:
@@ -713,16 +770,22 @@ components:
     Event:
       type: object
       properties:
-        date:
+        gameId:
+          type: integer
+          example: 12
+        eventType:
           type: string
-          example: 13.5.2021
-        hour:
+          example: "red Card"
+        gameDate:
           type: string
-          example: "1140"
-        minute:
+          example: 19941030
+        gameTime:
           type: string
-          example: "30"
-        action_description:
+          example: "17:30:25"
+        inGameMinute:
+          type: integer
+          example: 13
+        eventDescription:
           type: string
           example: goal by Ronaldo
 
@@ -745,14 +808,3 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Game'
-
-    body:
-      required:
-      - awaygoals
-      - homegoals
-      type: object
-      properties:
-        homegoals:
-          type: integer
-        awaygoals:
-          type: integer
