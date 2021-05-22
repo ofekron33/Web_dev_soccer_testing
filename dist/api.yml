@@ -1,68 +1,102 @@
+---
 openapi: 3.0.0
 info:
-  title: api
-  description: API for  project
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/daniel-izmaylov/FootballSite/1.0.0
+  description: SwaggerHub API Auto Mocking
 tags:
-  - name: Users
-  - name: Auth
-  - name: League
-  - name: Players
-  - name: Teams
-  - name: Games
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
 paths:
   /Register:
     post:
       tags:
-        - Auth
-      summary: Add new user
-      description: A new user from the client is added to the server
+      - Auth
+      summary: Add new user to the server
+      description: A json object contains all the detials about the new user.
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
-        "201":
-          description: A new user has been added
         "400":
-          description: wrong input parameters
-  /Login:
+          description: The userName is taken
+        "201":
+          description: The user created successfully
+          
+  /login:
     post:
       tags:
-        - Auth
-      summary: Login an exist user
-      description: An exist user login to the system
-      requestBody:
+      - Auth
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+      - name: username
+        in: query
+        description: The user name for login
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginScheme"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
-          description: >
-            User was found in the DB and authenitcated successfully.
-            The session ID is returned in a cookie named `session`. 
-            You should include this cookie in subsequent requests
-          # headers:
-          #   Set-Cookie:
-          #     schema:
-          #       type: string
-          #       example: session=87s97sdhgf279293f8w0e9
-            # Note that the Set-Cookie header and securitySchemes are not connected in any way, and the Set-Header definition is for documentation purposes only.
-        "401":
-          description: Authentication failed
+          description: successful operation
+        "400":
+          description: Invalid username/password supplied
   /logout:
     post:
       tags:
-        - Auth
-      summary: logout a user from the system and delete his cookie
+      - Auth
+      summary: Logs user out of the system
+      operationId: logoutUser
       responses:
         "200":
-          description: "the user has ben successfully logged out"
-
+          description: Successful logout
+        "400":
+          description: Need to login
+          
+          
+  /game:
+    post:
+      tags:
+      - Games
+      summary: Add a new game to the server
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      responses:
+        "201":
+          description: Match added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        "400":
+          description: something went wrong
+          
   /league/getDetails:
     get:
       tags:
@@ -76,72 +110,459 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/League"
+                  $ref: "#/components/schemas/Leauge"
         "400":
           description: wrong input parameters
-
-
-  /users/favoritePlayers:
+          
+  /game/{gameId}:
     get:
       tags:
-        - Users
-        - Players
-      summary: Return the favorite players that were saved by user
+      - Games
+      summary: search a game by ID
       parameters:
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
-          description: data about the user's favorites players returned
+          description: match
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PlayerPreview"
-        "401":
-          description: user is not authorized
-    post:
-      summary: save player in the favorites list of a user
+                $ref: '#/components/schemas/Game'
+        "400":
+          description: something went wrong
+    put:
       tags:
-        - Users
-        - Players
+      - Games
+      summary: update game results
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: game results
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+        required: true
+      responses:
+        "200":
+          description: game updated
+        "400":
+          description: something went wrong
+          
+          
+          
+  /game/{gameId}/events/:
+    post:
+      tags:
+      - Games
+      summary: Add an event to a game
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                playerId:
-                  type: string
-                  description: player's id which the user saved
-                  example: 85
-      responses:
-        "201":
-          description: The player successfully saved as favorite
-        "401":
-          description: user is not authorized
-          
-  /teams/teamFullDetails/{teamId}:
-    get:
-      summary: get full deatils about a team
-      description: useful for team page
-      tags:
-        - Teams
-      parameters:
-        - in: path
-          name: teamId
-          description: team's id
-          required: true
-          schema:
-            type: integer
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+        required: true
       responses:
         "200":
-          description: data about the team
+          description: success
+        "400":
+          description: Bad Request.
+  /coach/{coachId}:
+    get:
+      tags:
+      - Coachs
+      summary: get coach personal page by ID
+      operationId: CoachlPlayerPage
+      parameters:
+      - name: coachId
+        in: path
+        description: Identification of the requested coach by id.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+          example: 234
+      responses:
+        "200":
+          description: OK. recipes on the way.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
-        "404":
-          description: teamId is not exists
+                $ref: '#/components/schemas/Coach'
+        "204":
+          description: Bad, No Content was found.
+        "400":
+          description: Bad Request.
+    # put:
+    #   tags:
+    #   - Coachs
+    #   summary: get coach personal page
+    #   operationId: CoadIDchange
+    #   parameters:
+    #   - name: coachId
+    #     in: path
+    #     description: Identification of the requested coach by id.
+    #     required: true
+    #     style: simple
+    #     explode: false
+    #     schema:
+    #       type: number
+    #       example: 234
+    #   responses:
+    #     "200":
+    #       description: success
+    #     "400":
+    #       description: somting went wrong
+  /coach/{coach_name}:
+    get:
+      tags:
+      - Coachs
+      summary: search coach by name by name
+      parameters:
+      - name: coach_name
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: data of specific user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coach'
+        "400":
+          description: Bad Request.
+  /player/playerFullDetails/{playerId}:
+    get:
+      tags:
+      - Players
+      summary: get Player personal page by ID
+      operationId: PersnoalPlayerPage
+      parameters:
+      - name: playerId
+        in: path
+        description: Identification of the requested player by id.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+          example: 234
+      responses:
+        "200":
+          description: OK. recipes on the way.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        "204":
+          description: Bad, No Content was found.
+        "400":
+          description: Bad Request.
+    # put:
+    #   tags:
+    #   - Players
+    #   summary: update player page
+    #   operationId: playerchange
+    #   parameters:
+    #   - name: playerId
+    #     in: path
+    #     description: Identification of the requested playr by id.
+    #     required: true
+    #     style: simple
+    #     explode: false
+    #     schema:
+    #       type: number
+    #       example: 234
+    #   responses:
+    #     "200":
+    #       description: success
+    #     "400":
+    #       description: somting went wrong
+          
+          
+  /player/SearchPlayerByName/{playerName}:          
+    get:
+      tags:
+      - Players
+      summary: Search player by name
+      parameters:
+      - name: player_name
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: data of specific player
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        "400":
+          description: Bad Request.
+          
+          
+  /Team/{teamId}:
+    get:
+      tags:
+      - Teams
+      summary: get team personal page by ID
+      operationId: TeamPage
+      parameters:
+      - name: teamId
+        in: path
+        description: Identification of the requested team by id.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+          example: 234
+      responses:
+        "200":
+          description: OK. recipes on the way.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        "204":
+          description: Bad, No Content was found.
+        "400":
+          description: Bad Request.
+    # put:
+    #   tags:
+    #   - Teams
+    #   summary: update team page by ID
+    #   operationId: Teamchange
+    #   parameters:
+    #   - name: teamId
+    #     in: path
+    #     description: Identification of the requested team by id.
+    #     required: true
+    #     style: simple
+    #     explode: false
+    #     schema:
+    #       type: number
+    #       example: 234
+    #   responses:
+    #     "200":
+    #       description: success
+    #     "400":
+    #       description: somting went wrong
+          
+  /Team/{team_name}:
+    get:
+      tags:
+      - Teams
+      summary: Search team by name
+      parameters:
+      - name: team_name
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Data of specific user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        "400":
+          description: Bad Request.
+  /homepage:
+    get:
+      tags:
+      - Personal Page
+      summary: get UserHome page
+      operationId: HomePageGenreal
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leauge'
+        "400":
+          description: somting went wrong
+  /homepage/favoriteplayer:
+    get:
+      tags:
+      - Personal Page
+      summary: Get user's favorite players
+      responses:
+        "200":
+          description: favorite team array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePage/properties/favorite_teams'
+        "401":
+          description: User needs to be logged in
+        "400":
+          description: somting went wrong
+    put:
+      tags:
+      - Personal Page
+      summary: add a player to the user's favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Player'
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: somting went wrong
+  /homepage/favoriteteams:
+    get:
+      tags:
+      - Personal Page
+      summary: Get user's favorite teams
+      responses:
+        "200":
+          description: favorite team array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePage/properties/favorite_teams'
+        "401":
+          description: User needs to be logged in
+        "400":
+          description: somting went wrong
+    post:
+      tags:
+      - info
+      summary: add a team to user's favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: somting went wrong
+  /homepage/favoriteplayer/{playerId}:
+    delete:
+      tags:
+      - Personal Page
+      summary: Delete a player from the user's favorite players list
+      parameters:
+      - name: playerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: success
+        "400":
+          description: Bad Request.
+  /homepage/favoriteplayer/{teamId}:
+    delete:
+      tags:
+      - Personal Page
+      summary: Delete a team from the user's favorite team list
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: success
+        "400":
+          description: Bad Request.
+  /homepage/favoritematches:
+    get:
+      tags:
+      - Personal Page
+      summary: Get user's favorite matches
+      responses:
+        "200":
+          description: favorite match array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePage/properties/favorite_matches'
+        "401":
+          description: User needs to be logged in
+        "400":
+          description: somting went wrong
+    put:
+      tags:
+      - Personal Page
+      summary: Add a match to the user's favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: somting went wrong
+  /homepage/favoritematches/{gameId}:
+    delete:
+      tags:
+      - Personal Page
+      summary: Delete a game from the user's favorite game list
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: success
+        "400":
+          description: Bad Request.
 components:
   schemas:
     User:
@@ -151,100 +572,187 @@ components:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins between 3 to 8 letters only
-          example: ladygaga
-        firstname:
+          example: ofek3928
+        password:
+          maxLength: 10
+          minLength: 5
           type: string
-          description: user's first name
-          example: Stefani
-        lastname:
+          example: "123456"
+        firstName:
           type: string
-          description: user's last name
-          example: Germanotta
+          example: Ofek
+        lastName:
+          type: string
+          example: Ronen
         country:
           type: string
-          description: user's country
-          example: USA
-        password:
-          maxLength: 10
-          minLength: 5
-          type: string
-          description:
-            password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
-          format: password
-          example: lady@56
+          example: Israel
         email:
-          pattern: email
           type: string
-          description: user's email
-          example: ladygaga@gmail.com
-        image-url:
-          pattern: URL
+          format: email
+          example: ofekron@post.bgu.ac.il
+        image_url:
           type: string
-          description: URL for the user's image
-          example: https://cloudinary.com/
-      description: Model containing user info
-    LoginScheme:
-      type: object
-      properties:
-        username:
-          type: string
-          minLength: 3
-          maxLength: 8
-          description: username conatins letters only
-          example: naorbe
-        password:
-          type: string
-          minLength: 5
-          maxLength: 10
-          format: password
-          description: password conatins at least one number and one special char
-          example: naor@55
-    League:
-      type: object
-      properties:
-        league_name:
-          type: string
-          description: league name
-          example: Superliga
-        current_season_name:
-          type: string
-          description: current season name
-          example: "2020/2021"
-        current_stage_name:
-          type: string
-          description: current stage name
-          example: Championship Round
-    PlayerPreview:
-      type: object
-      properties:
-        name:
-          type: string
-          description: player's name
-          example: Sten Michael Grytebust
-        image:
-          type: string
-          description: player's image
           format: URL
-          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
+
+    Referee:
+        type: object
+        properties:
+            id:
+                type: integer
+                example: 33
+            Name:
+                type: string
+                example: Maccabi Tel Aviv    
+            image-url:
+                type: string
+                format: URL
+            qualification:
+                type: string
+                example: Line max
+
+    Leauge:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 33
+        Name:
+          type: string
+          example: Maccabi Tel Aviv
+        Season:
+          type: string
+          example: 2020/2021
+        Stage:
+          type: string
+          example: "1"
+        country:
+          type: string
+          example: Israel
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 23
+        fullName:
+          type: string
+          example: Ronaldo Messi
+        teamName:
+          example: Maccabi Tel Aviv
+        image-url:
+          type: string
+          format: URL
         position:
           type: integer
-          description: player's position in team
-          example: 1
-        team_name:
+
+    Coach:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 111
+        fullName:
           type: string
-          description: player's team name
-          example: København
+          example: zinedine zidane
+        teamName:
+          type: string
+          example: Real Madrid
+        image-url:
+          type: string
+          format: URL
+
     Team:
       type: object
       properties:
-        name:
+        id:
+          type: integer
+          example: 84
+        teamName:
           type: string
-          description: team name
-          example: København
+          example: Maccabi Tel Aviv
+        coach-id:
+          type: integer
+          example: 23
         players:
           type: array
           items:
-            type: object
-            $ref: "#/components/schemas/PlayerPreview"
+            $ref: '#/components/schemas/Player'
+        Games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+
+    Game:
+      type: object
+      properties:
+        gameDate:
+          type: string
+          example: 13.5.2021
+        homeTeam:
+          $ref: '#/components/schemas/Team'
+        awayTeam:
+          $ref: '#/components/schemas/Team'
+        referees:
+          $ref: "#/components/schemas/Referee"    
+        events:    
+            type: array
+            items:
+                $ref: "#/components/schemas/Event"  
+        homeScore:
+          type: integer
+          example: 2
+        awayScore:
+          example: 3
+
+    Event:
+      type: object
+      properties:
+        date:
+          type: string
+          example: 13.5.2021
+        hour:
+          type: string
+          example: "1140"
+        minute:
+          type: string
+          example: "30"
+        action_description:
+          type: string
+          example: goal by Ronaldo
+
+    HomePage:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        favorite_players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        favorite_teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        favorite_matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+
+    body:
+      required:
+      - awaygoals
+      - homegoals
+      type: object
+      properties:
+        homegoals:
+          type: integer
+        awaygoals:
+          type: integer
