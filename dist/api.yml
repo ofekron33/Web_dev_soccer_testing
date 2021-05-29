@@ -21,97 +21,55 @@ paths:
   /Register:
     post:
       tags:
-      - Auth
-      summary: Add new user to the server
-      description: A json object contains all the detials about the new user.
+        - Auth
+      summary: Add new user
+      description: A new user from the client is added to the server
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
-        "400":
-          description: The userName is taken
         "201":
-          description: The user created successfully
-          
-  /login:
+          description: A new user has been added
+        "400":
+          description: wrong input parameters
+  /Login:
     post:
       tags:
-      - Auth
-      summary: Logs user into the system
-      operationId: loginUser
-      parameters:
-      - name: username
-        in: query
-        description: The user name for login
+        - Auth
+      summary: Login an exist user
+      description: An exist user login to the system
+      requestBody:
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: password
-        in: query
-        description: The password for login in clear text
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginScheme"
       responses:
         "200":
-          description: successful operation
-        "400":
-          description: Invalid username/password supplied
+          description: >
+            User was found in the DB and authenitcated successfully.
+            The session ID is returned in a cookie named `session`. 
+            You should include this cookie in subsequent requests
+          # headers:
+          #   Set-Cookie:
+          #     schema:
+          #       type: string
+          #       example: session=87s97sdhgf279293f8w0e9
+            # Note that the Set-Cookie header and securitySchemes are not connected in any way, and the Set-Header definition is for documentation purposes only.
+        "401":
+          description: Authentication failed
   /logout:
     post:
       tags:
-      - Auth
-      summary: Logs user out of the system
-      operationId: logoutUser
+        - Auth
+      summary: logout a user from the system and delete his cookie
       responses:
         "200":
-          description: Successful logout
-        "400":
-          description: Need to login
-          
-          
-  /game: #changed
-    post:
-      tags:
-      - Games
-      summary: Add a new game to the server
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                gameDate:
-                  type: string
-                  example: 19941030
-                homeTeam:
-                  type: integer
-                  example: 132
-                awayTeam:
-                  type: integer
-                  example: 123
-                refereesID:
-                  type: integer
-                  example: 101
-                stageID:
-                  type: integer
-                  example: 6
+          description: "the user has ben successfully logged out"
 
-      responses:
-        "201":
-          description: Game created
-        "409":
-          description: Game already in system
-        "400":
-          description: something went wrong
-          
   /league/getDetails:
     get:
       tags:
@@ -127,7 +85,44 @@ paths:
                 items:
                   $ref: "#/components/schemas/Leauge"
         "400":
-          description: wrong input parameters
+          description: wrong input parameters         
+          
+  /gameChange/: #changed
+    post:
+      tags:
+      - Games, Admins
+      summary: Add a new game to the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gameDate:
+                  type: date
+                  pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+                  example: "1994-10-30"
+                homeTeam:
+                  type: integer
+                  example: 132
+                awayTeam:
+                  type: integer
+                  example: 123
+                referee:
+                  type: String
+                  example: 101
+                stageID:
+                  type: integer
+                  example: 6
+      responses:
+        "201":
+          description: Game created
+        "409":
+          description: Game already in system
+        "400":
+          description: something went wrong
+
           
   /game/{gameId}:
     get:
@@ -142,7 +137,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: 18
+        example: 42
       responses:
         "200":
           description: match
@@ -152,9 +147,11 @@ paths:
                 $ref: '#/components/schemas/Game'
         "400":
           description: something went wrong
+          
+  /gameChange/{gameId}:
     put: #change
       tags:
-      - Games
+      - Games, Admins
       summary: update game results
       parameters:
       - name: gameId
@@ -189,7 +186,7 @@ paths:
     get: #CHANGED
       tags:
       - Games
-      summary: return all teh event of the game
+      summary: return all the event of the game
       parameters:
       - name: gameId
         in: path
@@ -215,11 +212,12 @@ paths:
         "406":
           description: Game Not Found.
         "400":
-          description: Bad Request. 
-        
+          description: Bad Request.
+
+  /gameChange/{gameId}/events/:
     post:
       tags:
-      - Games
+      - Games, Admins
       summary: Add an event to a game
       parameters:
       - name: gameId
@@ -243,7 +241,7 @@ paths:
           description: Game Not Found.
         "400":
           description: Bad Request.
-  /coach/{coachId}:
+  /coach/coachDetailById/{coachId}:
     get:
       tags:
       - Coachs
@@ -290,13 +288,14 @@ paths:
     #       description: success
     #     "400":
     #       description: somting went wrong
-  /coach/{coach_name}:
+
+  /coach/coachDetailByName/{coachName}:
     get:
       tags:
       - Coachs
       summary: search coach by name by name
       parameters:
-      - name: coach_name
+      - name: coachName
         in: path
         required: true
         style: simple
@@ -385,7 +384,7 @@ paths:
           description: Bad Request.
           
           
-  /Team/{teamId}:
+  /teams/teamFullDetails/{teamId}:
     get:
       tags:
       - Teams
@@ -433,7 +432,7 @@ paths:
     #     "400":
     #       description: somting went wrong
           
-  /Team/{team_name}:
+  /teams//teamByName/{team_name}:
     get:
       tags:
       - Teams
@@ -755,12 +754,9 @@ components:
           $ref: '#/components/schemas/Team'
         awayTeam:
           $ref: '#/components/schemas/Team'
-        referees:
-          $ref: "#/components/schemas/Referee"    
-        events:    
-            type: array
-            items:
-                $ref: "#/components/schemas/Event"  
+        referee:
+          type: string
+          example: Daniel Izmaylov  
         homeScore:
           type: integer
           example: 2
@@ -770,9 +766,6 @@ components:
     Event:
       type: object
       properties:
-        gameId:
-          type: integer
-          example: 12
         eventType:
           type: string
           example: "red Card"
@@ -808,3 +801,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Game'
+    LoginScheme:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 8
+          description: username conatins letters only
+          example: admin
+        password:
+          type: string
+          minLength: 5
+          maxLength: 10
+          format: password
+          description: password conatins at least one number and one special char
+          example: admin

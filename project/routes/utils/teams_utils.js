@@ -5,19 +5,25 @@ async function getTeamDetailsbyID(TEAM_ID) {
     `https://soccer.sportmonks.com/api/v2.0/teams/${TEAM_ID}`,
     {
       params: {
-        include:"coach, trophies",
+        include: "coach, trophies,league",
         api_token: process.env.api_token,
       },
     }
   );
-  return {
-    team_name: team.data.data.name,
-    logo_path: team.data.data.logo_path,
-    coach_id: team.data.data.coach.data.coach_id,
-    coach_name: team.data.data.coach.data.fullname,
-    trophies: team.data.data.trophies.data,
-    // next game details should come from DB
-  };
+
+  if (team.data.data.league) {
+    if (team.data.data.league.data.id === 271) {
+      return {
+        team_name: team.data.data.name,
+        logo_path: team.data.data.logo_path,
+        coach_id: team.data.data.coach.data.coach_id,
+        coach_name: team.data.data.coach.data.fullname,
+        trophies: team.data.data.trophies.data,
+      }
+
+      // next game details should come from DB
+    };
+  }
 }
 
 async function getTeamDetailsbyName(TEAM_Name) {
@@ -29,15 +35,15 @@ async function getTeamDetailsbyName(TEAM_Name) {
       },
     }
   );
-  const Team_Info= [];
+  const Team_Info = [];
   teams.data.data.forEach((element) => {
-    var obj= {
+    var obj = {
       team_id: element.id,
       team_name: element.name,
       logo_path: element.logo_path,
     }
     Team_Info.push(obj)
-   } )
+  })
 
   return Team_Info;
 }

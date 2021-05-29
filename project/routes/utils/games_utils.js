@@ -1,11 +1,20 @@
 const DButils = require("./DButils");
+const teams_utils = require("./teams_utils");
 
 
 async function getGameDetial(game_id) {
-  const game_detiel = await DButils.execQuery(
+  const game_detiel = (await DButils.execQuery(
     `select * from dbo.Games where gameID='${game_id}'`
-  );
-  return game_detiel;
+  ))[0];
+  // const awayTeam =await  teams_utils.getTeamDetailsbyID(game_detiel.awayTeam);
+  // const homeTeam = await teams_utils.getTeamDetailsbyID( game_detiel.homeTeam);
+  // const events = await getEvents(game_id);
+  return {
+    gameDate: game_detiel.gameDate,
+    referee: game_detiel.referee,
+    homescore: game_detiel.homeScore,
+    awayScore: game_detiel.awayScore,
+  };
 }
 
 async function updateGameDetial(game_id,homeScore, awayScore) {
@@ -28,9 +37,20 @@ async function AddEvent(game_id, eventType, gameDate, gameTime, inGameMinute, ev
 
 async function getEvents(game_id) {
   // (gameID, eventType, gameDate, gameTime, inGameMinute, eventDescription)
-  const added_event = await DButils.execQuery(
+  const added_event =await DButils.execQuery(
     `select * from dbo.GameEvents where gameID='${game_id}'`
   );
+  const event_Info = [];
+  added_event.forEach((element) => {
+    var obj = {
+      eventType: element.eventType,
+      gameDate: element.gameDate,
+      gameTime: element.gameTime,
+      inGameMinute: element.inGameMinute,
+      eventDescription: element.eventDescription,
+    }
+    event_Info.push(obj)
+  })
   return added_event;
 }
 
