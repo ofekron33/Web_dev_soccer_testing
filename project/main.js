@@ -84,8 +84,8 @@ app.use("/teams", teams);
 app.use("/player", player);
 app.use("/game", games);
 app.use("/gamechange", gamechange);
-app.use(auth);
 app.use("/homepage", homepage);
+app.use(auth);
 
 app.use(function (err, req, res, next) {
   console.error(err);
