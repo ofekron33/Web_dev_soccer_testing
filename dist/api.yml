@@ -727,9 +727,6 @@ components:
           format: URL
 
 
-
-
-
     Team:
       type: object
       properties:
