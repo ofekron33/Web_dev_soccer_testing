@@ -55,6 +55,8 @@ async function getPlayersInfo(players_ids_list) {
         params: {
           api_token: process.env.api_token,
           include: "team.league",
+ //         position_id: 3
+
         },
       })
     )
@@ -102,16 +104,49 @@ async function getPlayersByTeam(team_id) {
 }
 
 async function SearchPlayerByName(name) {
+  let promises = [];
+
   const player = await axios.get(`${api_domain}/players/search/${name}/`,
     {
       params: {
         include: "team.league",
         api_token: process.env.api_token,
+//        position_id: "3"
       },
     }
   );
-  return extractRelevantPlayersData(player,false);
+  
+  return SearchPlayerByNameHelper(player);
 }
+
+function SearchPlayerByNameHelper(players_info) {
+  const Player_arr = [];
+  const arr=players_info.data.data;
+  const tmp=arr[0]
+  arr[0].forEach((element) => {
+    if (isPromise){
+      element = element.data.data;
+    }
+    if (element.team && element.team.data.league) {
+      var league = element.team.data.league.data.id;
+      if (league === 271) {
+        var obj = {
+          name: element.fullname,
+          position: element.position_id,
+          image: element.image_path,
+          team_name: element.team.data.name,
+          id: element.player_id
+        }
+        Player_arr.push(obj);
+
+      }
+
+    }
+
+  })
+  return Player_arr;
+}
+
 
 
 exports.getPlayersByTeam = getPlayersByTeam;

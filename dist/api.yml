@@ -140,7 +140,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: 42
+        example: 18
       responses:
         "200":
           description: match
@@ -154,7 +154,7 @@ paths:
   /gamechange/{gameId}:
     put: #change
       tags:
-      - Games, Admins
+      - Games
       summary: update game results
       parameters:
       - name: gameId
@@ -189,7 +189,7 @@ paths:
     get: #CHANGED
       tags:
       - Games
-      summary: return all the event of the game
+      summary: return all teh event of the game
       parameters:
       - name: gameId
         in: path
@@ -222,7 +222,7 @@ paths:
   /gamechange/{gameId}/events/:
     post:
       tags:
-      - Games, Admins
+      - Games
       summary: Add an event to a game
       parameters:
       - name: gameId
@@ -246,12 +246,16 @@ paths:
           description: Game Not Found.
         "400":
           description: Bad Request.
+<<<<<<< HEAD
         "401":
           description: Unauthorized.
 
 
 
   /coach/coachDetailById/{coachId}:
+=======
+  /coach/{coachId}:
+>>>>>>> origin/Ofek2
     get:
       tags:
       - Coachs
@@ -301,14 +305,13 @@ paths:
     #       description: success
     #     "400":
     #       description: somting went wrong
-
-  /coach/coachDetailByName/{coachName}:
+  /coach/{coach_name}:
     get:
       tags:
       - Coachs
-      summary: search coach by name by name
+      summary: search coach by name by name      
       parameters:
-      - name: coachName
+      - name: coach_name
         in: path
         required: true
         style: simple
@@ -396,7 +399,7 @@ paths:
         "400":
           description: Bad Request.
           
-          
+
   /teams/teamFullDetails/{teamId}:
     get:
       tags:
@@ -591,10 +594,6 @@ paths:
           description: User needs to be logged in
         "400":
           description: somting went wrong
-
-          
-          
-          
   /homepage/favoritematches/{gameId}:
     delete:
       tags:
@@ -604,10 +603,7 @@ paths:
       - name: gameId
         in: path
         required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+
       responses:
         "200":
           description: success
@@ -618,7 +614,7 @@ paths:
       - Personal Page match
       summary: add a match to the user's favorites
       parameters:
-      - name: matchId
+      - name: gameId
         in: path
         required: true
       responses:
@@ -761,9 +757,12 @@ components:
           $ref: '#/components/schemas/Team'
         awayTeam:
           $ref: '#/components/schemas/Team'
-        referee:
-          type: string
-          example: Daniel Izmaylov  
+        referees:
+          $ref: "#/components/schemas/Referee"    
+        events:    
+            type: array
+            items:
+                $ref: "#/components/schemas/Event"  
         homeScore:
           type: integer
           example: 2
@@ -773,6 +772,9 @@ components:
     Event:
       type: object
       properties:
+        gameId:
+          type: integer
+          example: 12
         eventType:
           type: string
           example: "red Card"
