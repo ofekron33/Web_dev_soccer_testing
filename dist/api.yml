@@ -87,43 +87,6 @@ paths:
         "400":
           description: wrong input parameters         
           
-  /gameChange/: #changed
-    post:
-      tags:
-      - Games, Admins
-      summary: Add a new game to the server
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                gameDate:
-                  type: date
-                  pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
-                  example: "1994-10-30"
-                homeTeam:
-                  type: integer
-                  example: 132
-                awayTeam:
-                  type: integer
-                  example: 123
-                referee:
-                  type: String
-                  example: 101
-                stageID:
-                  type: integer
-                  example: 6
-      responses:
-        "201":
-          description: Game created
-        "409":
-          description: Game already in system
-        "400":
-          description: something went wrong
-
-          
   /game/{gameId}:
     get:
       tags:
@@ -137,7 +100,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: 42
+        example: 18
       responses:
         "200":
           description: match
@@ -147,11 +110,9 @@ paths:
                 $ref: '#/components/schemas/Game'
         "400":
           description: something went wrong
-          
-  /gameChange/{gameId}:
     put: #change
       tags:
-      - Games, Admins
+      - Games
       summary: update game results
       parameters:
       - name: gameId
@@ -186,7 +147,7 @@ paths:
     get: #CHANGED
       tags:
       - Games
-      summary: return all the event of the game
+      summary: return all teh event of the game
       parameters:
       - name: gameId
         in: path
@@ -212,12 +173,11 @@ paths:
         "406":
           description: Game Not Found.
         "400":
-          description: Bad Request.
-
-  /gameChange/{gameId}/events/:
+          description: Bad Request. 
+        
     post:
       tags:
-      - Games, Admins
+      - Games
       summary: Add an event to a game
       parameters:
       - name: gameId
@@ -241,7 +201,7 @@ paths:
           description: Game Not Found.
         "400":
           description: Bad Request.
-  /coach/coachDetailById/{coachId}:
+  /coach/{coachId}:
     get:
       tags:
       - Coachs
@@ -288,14 +248,13 @@ paths:
     #       description: success
     #     "400":
     #       description: somting went wrong
-
-  /coach/coachDetailByName/{coachName}:
+  /coach/{coach_name}:
     get:
       tags:
       - Coachs
-      summary: search coach by name by name
+      summary: search coach by name by name      
       parameters:
-      - name: coachName
+      - name: coach_name
         in: path
         required: true
         style: simple
@@ -383,7 +342,7 @@ paths:
         "400":
           description: Bad Request.
           
-          
+
   /teams/teamFullDetails/{teamId}:
     get:
       tags:
@@ -432,7 +391,7 @@ paths:
     #     "400":
     #       description: somting went wrong
           
-  /teams//teamByName/{team_name}:
+  /Team/{team_name}:
     get:
       tags:
       - Teams
@@ -472,7 +431,7 @@ paths:
   /homepage/favoriteplayer:
     get:
       tags:
-      - Personal Page
+      - Personal Page player
       summary: Get user's favorite players
       responses:
         "200":
@@ -485,25 +444,11 @@ paths:
           description: User needs to be logged in
         "400":
           description: somting went wrong
-    put:
-      tags:
-      - Personal Page
-      summary: add a player to the user's favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Player'
-        required: true
-      responses:
-        "200":
-          description: success
-        "400":
-          description: somting went wrong
-  /homepage/favoriteteams:
+
+  /homepage/favoriteteam:
     get:
       tags:
-      - Personal Page
+      - Personal Page team
       summary: Get user's favorite teams
       responses:
         "200":
@@ -516,43 +461,51 @@ paths:
           description: User needs to be logged in
         "400":
           description: somting went wrong
-    post:
+
+  /homepage/favoriteplayer/{playerId}:
+    put:
       tags:
-      - info
-      summary: add a team to user's favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Team'
+      - Personal Page player
+      summary: add a player to the user's favorites
+      parameters:
+      - name: playerId
+        in: path
         required: true
       responses:
         "200":
           description: success
         "400":
-          description: somting went wrong
-  /homepage/favoriteplayer/{playerId}:
+          description: somting went wrong  
     delete:
       tags:
-      - Personal Page
+      - Personal Page player
       summary: Delete a player from the user's favorite players list
       parameters:
       - name: playerId
         in: path
         required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
       responses:
         "200":
           description: success
         "400":
           description: Bad Request.
-  /homepage/favoriteplayer/{teamId}:
+  /homepage/favoriteteam/{teamId}:
+    put:
+      tags:
+      - Personal Page team
+      summary: add a team to the user's favorites
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: somting went wrong  
     delete:
       tags:
-      - Personal Page
+      - Personal Page team
       summary: Delete a team from the user's favorite team list
       parameters:
       - name: teamId
@@ -570,7 +523,7 @@ paths:
   /homepage/favoritematches:
     get:
       tags:
-      - Personal Page
+      - Personal Page match
       summary: Get user's favorite matches
       responses:
         "200":
@@ -583,42 +536,34 @@ paths:
           description: User needs to be logged in
         "400":
           description: somting went wrong
-    put:
-      tags:
-      - Personal Page
-      summary: Add a match to the user's favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Game'
-        required: true
-      responses:
-        "200":
-          description: success
-        "400":
-          description: somting went wrong
-          
-          
-          
   /homepage/favoritematches/{gameId}:
     delete:
       tags:
-      - Personal Page
+      - Personal Page match
       summary: Delete a game from the user's favorite game list
       parameters:
       - name: gameId
         in: path
         required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+
       responses:
         "200":
           description: success
         "400":
           description: Bad Request.
+    put:
+      tags:
+      - Personal Page match
+      summary: add a match to the user's favorites
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: somting went wrong  
 components:
   schemas:
     User:
@@ -754,9 +699,12 @@ components:
           $ref: '#/components/schemas/Team'
         awayTeam:
           $ref: '#/components/schemas/Team'
-        referee:
-          type: string
-          example: Daniel Izmaylov  
+        referees:
+          $ref: "#/components/schemas/Referee"    
+        events:    
+            type: array
+            items:
+                $ref: "#/components/schemas/Event"  
         homeScore:
           type: integer
           example: 2
@@ -766,6 +714,9 @@ components:
     Event:
       type: object
       properties:
+        gameId:
+          type: integer
+          example: 12
         eventType:
           type: string
           example: "red Card"

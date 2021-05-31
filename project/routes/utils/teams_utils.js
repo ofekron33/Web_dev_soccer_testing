@@ -1,4 +1,5 @@
 const axios = require("axios");
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 async function getTeamDetailsbyID(TEAM_ID) {
   const team = await axios.get(
@@ -48,6 +49,42 @@ async function getTeamDetailsbyName(TEAM_Name) {
   return Team_Info;
 }
 
+async function getTeam(teams_ids_list) {
+  let promises = [];
+  teams_ids_list.map((id) =>
+    promises.push(
+      axios.get(`${api_domain}/teams/${id}`, {
+        params: {
+          include: "coach, trophies,league",
+          api_token: process.env.api_token,
+        },
+      })
+    )
+  );
+  let team_info = await Promise.all(promises);
+  return extractRelevantData (team_info,true);
+}
+
+
+
+function extractRelevantData(teams_info, isPromise) {
+  const team_arr = [];
+  teams_info.forEach((element) => {
+        var obj = {
+          team_name: element.data.data.name,
+          logo_path: element.data.data.logo_path,
+          coach_id: element.data.data.coach.data.coach_id,
+          coach_name:element.data.data.coach.data.fullname,
+          trophies: element.data.data.trophies.data,
+        }
+        team_arr.push(obj);
+    })
+  return team_arr;
+}
+
+
 
 exports.getTeamDetailsbyID = getTeamDetailsbyID;
 exports.getTeamDetailsbyName = getTeamDetailsbyName;
+exports.getTeamDetailsbyName = getTeamDetailsbyName;
+exports.getTeam=getTeam;
