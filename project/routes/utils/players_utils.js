@@ -65,10 +65,13 @@ async function getPlayersInfo(players_ids_list) {
 
 function extractRelevantPlayersData(players_info, isPromise) {
   const Player_arr = [];
+  if (!isPromise){
+    players_info = players_info.data.data
+  }
   players_info.forEach((element) => {
-    if (isPromise){
-      element = element.data.data;
-    }
+    if (isPromise) {
+    element = element.data.data;
+  }
     if (element.team && element.team.data.league) {
       var league = element.team.data.league.data.id;
       if (league === 271) {
@@ -88,6 +91,8 @@ function extractRelevantPlayersData(players_info, isPromise) {
   })
   return Player_arr;
 }
+
+
 
 
 async function getPlayersByTeam(team_id) {

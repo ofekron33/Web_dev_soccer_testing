@@ -24,6 +24,7 @@ async function getTeamDetailsbyID(TEAM_ID) {
       // next game details should come from DB
     };
   }
+
 }
 
 async function getTeamDetailsbyName(TEAM_Name) {
