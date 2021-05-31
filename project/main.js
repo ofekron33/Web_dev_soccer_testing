@@ -55,6 +55,7 @@ const player = require("./routes/player");
 const games = require("./routes/games");
 const gamechange = require("./routes/gamechange");
 const homepage = require("./routes/homepage");
+const coach = require("./routes/coachs");
 //#endregion
 
 //#region cookie middleware
@@ -85,6 +86,7 @@ app.use("/player", player);
 app.use("/game", games);
 app.use("/gamechange", gamechange);
 app.use("/homepage", homepage);
+app.use("/coach", coach);
 app.use(auth);
 
 app.use(function (err, req, res, next) {

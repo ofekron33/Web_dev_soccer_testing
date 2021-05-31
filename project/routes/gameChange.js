@@ -28,6 +28,8 @@ router.use(async function (req, res, next) {
 
 router.post("/", async (req, res, next) => {
     try {
+        if (req.body.homeTeam === req.body.awayTeam)
+            throw { status: 409, message: "Team Cant play agianst itself." };
 
         const date = req.body.gameDate
         const games = await DButils.execQuery(
@@ -77,7 +79,7 @@ router.post("/:gameId/events/", async (req, res, next) => {
         if (!game_details)
             throw { status: 409, message: "There is no game" };
 
-        var gamedate = game.gameDate;
+        var gamedate = game_details.gameDate;
         var today = new Date();
         if (gamedate > today)
             throw { status: 409, message: "The game didn't happen yet." };

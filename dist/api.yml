@@ -86,11 +86,34 @@ paths:
                   $ref: "#/components/schemas/Leauge"
         "400":
           description: wrong input parameters
-
+  /game/{gameId}:
+    get:
+      tags:
+        - Games
+      summary: search a game by ID
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: 42
+      responses:
+        "200":
+          description: match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: something went wrong
+        
   /gamechange/: #changed
     post:
       tags:
-        - Games, Admins
+      - Games, Admins
       summary: Add a new game to the server
       requestBody:
         required: true
@@ -115,7 +138,7 @@ paths:
                 stageID:
                   type: integer
                   example: 6
-                stadium:
+                stadium: 
                   type: String
                   example: Silverdo
       responses:
@@ -125,44 +148,21 @@ paths:
           description: Game already in system
         "400":
           description: something went wrong
-
-  /game/{gameId}:
-    get:
-      tags:
-        - Games
-      summary: search a game by ID
-      parameters:
-        - name: gameId
-          in: path
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-          example: 18
-      responses:
-        "200":
-          description: match
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Game"
-        "400":
-          description: something went wrong
+          
   /gamechange/{gameId}:
     put: #change
       tags:
-        - Games
+      - Games, Admins
       summary: update game results
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-          example: 56
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 56
       requestBody:
         description: game results
         content:
@@ -180,22 +180,22 @@ paths:
           description: game updated
         "400":
           description: something went wrong
-
+        
+          
   /game/{gameId}/events/:
     get: #CHANGED
       tags:
-        - Games
-      summary: return all teh event of the game
+      - Games
+      summary: return all the event of the game
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-          example: 56
-
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 56 
       responses:
         "200":
           description: OK. recipes on the way.
@@ -204,7 +204,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Event"
+                  $ref: '#/components/schemas/Event'
 
         "204":
           description: Bad, No Event was found.
@@ -218,22 +218,22 @@ paths:
   /gamechange/{gameId}/events/:
     post:
       tags:
-        - Games
+      - Games, Admins
       summary: Add an event to a game
       parameters:
-        - name: gameId
-          in: path
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-          example: 56
+      - name: gameId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 56
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Event"
+                $ref: '#/components/schemas/Event'
         required: true
       responses:
         "201":
@@ -295,7 +295,7 @@ paths:
     #       description: success
     #     "400":
     #       description: somting went wrong
-  /coach/{coach_name}:
+  /coach/coachDetailByName/{coach_name}:
     get:
       tags:
         - Coachs
@@ -308,6 +308,7 @@ paths:
           explode: false
           schema:
             type: string
+          example: Jens
       responses:
         "200":
           description: data of specific user
@@ -315,6 +316,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Coach"
+
         "400":
           description: Bad Request.
   /player/playerFullDetails/{playerId}:
@@ -332,7 +334,7 @@ paths:
           explode: false
           schema:
             type: number
-            example: 234
+            example: 85764
       responses:
         "200":
           description: OK. recipes on the way.
@@ -403,7 +405,7 @@ paths:
           explode: false
           schema:
             type: number
-            example: 234
+            example: 85
       responses:
         "200":
           description: OK. recipes on the way.
@@ -415,26 +417,7 @@ paths:
           description: Bad, No Content was found.
         "400":
           description: Bad Request.
-    # put:
-    #   tags:
-    #   - Teams
-    #   summary: update team page by ID
-    #   operationId: Teamchange
-    #   parameters:
-    #   - name: teamId
-    #     in: path
-    #     description: Identification of the requested team by id.
-    #     required: true
-    #     style: simple
-    #     explode: false
-    #     schema:
-    #       type: number
-    #       example: 234
-    #   responses:
-    #     "200":
-    #       description: success
-    #     "400":
-    #       description: somting went wrong
+
   /teams/teamByName/{team_name}:
     get:
       tags:
@@ -448,6 +431,8 @@ paths:
           explode: false
           schema:
             type: string
+          example: Horsens
+
       responses:
         "200":
           description: Data of specific user
@@ -457,22 +442,7 @@ paths:
                 $ref: "#/components/schemas/Team"
         "400":
           description: Bad Request.
-  /homepage:
-    get:
-      tags:
-        - Personal Page
-      summary: get UserHome page
-      operationId: HomePageGenreal
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Leauge"
-        "400":
-          description: somting went wrong
-          
+
   /homepage/favoriteplayer:
     get:
       tags:
