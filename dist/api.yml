@@ -482,6 +482,7 @@ paths:
                 $ref: '#/components/schemas/Leauge'
         "400":
           description: somting went wrong
+          
   /homepage/favoriteplayer:
     get:
       tags:
