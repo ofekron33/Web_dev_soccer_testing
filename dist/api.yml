@@ -85,13 +85,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/Leauge"
         "400":
-<<<<<<< HEAD
           description: wrong input parameters
 
-=======
-          description: wrong input parameters         
-          
->>>>>>> origin/daniel3
   /gamechange/: #changed
     post:
       tags:
@@ -131,10 +126,6 @@ paths:
         "400":
           description: something went wrong
 
-<<<<<<< HEAD
-=======
-          
->>>>>>> origin/daniel3
   /game/{gameId}:
     get:
       tags:
@@ -158,11 +149,6 @@ paths:
                 $ref: "#/components/schemas/Game"
         "400":
           description: something went wrong
-<<<<<<< HEAD
-
-=======
-          
->>>>>>> origin/daniel3
   /gamechange/{gameId}:
     put: #change
       tags:
@@ -256,20 +242,10 @@ paths:
           description: Game Not Found.
         "400":
           description: Bad Request.
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> origin/daniel3
         "401":
           description: Unauthorized.
 
   /coach/coachDetailById/{coachId}:
-<<<<<<< HEAD
-=======
-=======
-  /coach/{coachId}:
->>>>>>> origin/Ofek2
->>>>>>> origin/daniel3
     get:
       tags:
         - Coachs
@@ -459,11 +435,6 @@ paths:
     #       description: success
     #     "400":
     #       description: somting went wrong
-<<<<<<< HEAD
-
-=======
-          
->>>>>>> origin/daniel3
   /teams/teamByName/{team_name}:
     get:
       tags:
@@ -630,24 +601,14 @@ paths:
         - Personal Page match
       summary: add a match to the user's favorites
       parameters:
-<<<<<<< HEAD
-        - name: gameId
-          in: path
-          required: true
-=======
       - name: gameId
         in: path
         required: true
->>>>>>> origin/daniel3
       responses:
         "200":
           description: success
         "400":
-<<<<<<< HEAD
-          description: somting went wrong
-=======
           description: somting went wrong  
->>>>>>> origin/daniel3
 components:
   schemas:
     User:
