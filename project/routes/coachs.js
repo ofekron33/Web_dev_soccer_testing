@@ -23,4 +23,14 @@ router.get("/coachDetailByName/:coachName", async (req, res, next) => {
 });
 
 
+router.get("/coachDetailByName/:coach_name/filterbyTeam/:teamName", async (req, res, next) => {
+  try {
+    const coachess = await coach_utils.SearchCoachByname(req.params.coach_name);
+    const filterd_player_details = await coach_utils.filterCoachbyTeamName(coachess, req.params.teamName);
+    res.send(filterd_player_details);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

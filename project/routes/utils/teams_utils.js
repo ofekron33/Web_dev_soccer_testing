@@ -12,10 +12,11 @@ async function getTeamDetailsbyID(TEAM_ID) {
         },
       }
     );
-
+    
     if (team.data.data.league) {
       if (team.data.data.league.data.id === 271) {
         return {
+          team_id: TEAM_ID,
           team_name: team.data.data.name,
           logo_path: team.data.data.logo_path,
           coach_id: team.data.data.coach.data.coach_id,
