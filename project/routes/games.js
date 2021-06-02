@@ -49,4 +49,19 @@ router.get("/getClosestGame/", async (req, res, next) => {
   }
 });
 
+router.get("/getCurrentStageGames/", async (req, res, next) => {
+  try {
+
+    const game = await games_utils.getClosestGame();
+    if (game){
+      const stage_games=await games_utils.getCurrentStageGames(game[0].stage);
+
+    }
+ //   const game = await games_utils.getCurrentStageGames(req.params.stageNum);
+    res.status(200).send(stage_games);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

@@ -74,7 +74,7 @@ paths:
     get:
       tags:
         - league
-      summary: Return the details about the current league
+      summary: Return the details about the current 
       responses:
         "200":
           description: data about the current league returned
@@ -110,6 +110,20 @@ paths:
       tags:
         - Games
       summary: returns the colset game in the leauge
+      responses:
+        "200":
+          description: match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: something went wrong
+  /game/getCurrentStageGames:
+    get:
+      tags:
+        - Games
+      summary: returns the current stage games
       responses:
         "200":
           description: match
@@ -294,10 +308,10 @@ paths:
           explode: false
           schema:
             type: number
-            example: 234
+            example: 456421
       responses:
         "200":
-          description: OK. recipes on the way.
+          description: OK.
           content:
             application/json:
               schema:
@@ -796,10 +810,10 @@ components:
       properties:
         id:
           type: integer
-          example: 33
+          example: 17328
         Name:
           type: string
-          example: Maccabi Tel Aviv
+          example: Superliga
         Season:
           type: string
           example: 2020/2021
@@ -808,7 +822,7 @@ components:
           example: "1"
         country:
           type: string
-          example: Israel
+          example: Denmark
         games:
           type: array
           items:
@@ -819,30 +833,32 @@ components:
       properties:
         id:
           type: integer
-          example: 23
+          example: 82808
         fullName:
           type: string
-          example: Ronaldo Messi
+          example: Jesper Hansen
         teamName:
-          example: Maccabi Tel Aviv
+          example: Midtjylland
         image-url:
           type: string
           format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/24/82808.png
         position:
           type: integer
+          example: 1
 
     Coach:
       type: object
       properties:
         id:
           type: integer
-          example: 111
+          example: 456421
         fullName:
           type: string
-          example: zinedine zidane
+          example: Jess Thorup
         teamName:
           type: string
-          example: Real Madrid
+          example: København
         image-url:
           type: string
           format: URL
@@ -853,13 +869,13 @@ components:
       properties:
         id:
           type: integer
-          example: 84
+          example: 85
         teamName:
           type: string
-          example: Maccabi Tel Aviv
+          example: København
         coach-id:
           type: integer
-          example: 23
+          example: 456421
         players:
           type: array
           items:
