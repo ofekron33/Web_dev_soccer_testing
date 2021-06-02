@@ -7,7 +7,7 @@ const games_utils = require("./utils/games_utils");
  * This path returns the favorites players that were saved by the logged-in user
  */
 
-router.get("/:gameId", async (req, res, next) => {
+router.get("/getDetails/:gameId", async (req, res, next) => {
   try {    
     const game_details = await games_utils.getGameDetial(req.params.gameId);
     if (!game_details)
@@ -31,5 +31,37 @@ router.get("/:gameId/events/", async (req, res, next) => {
   }
 });
 
+router.get("/allGames/", async (req, res, next) => {
+  try {
+    const games=await games_utils.returnAllGames();
+    res.status(200).send(games);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/getClosestGame/", async (req, res, next) => {
+  try { 
+    const game = await games_utils.getClosestGame();
+    res.status(200).send(game);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/getCurrentStageGames/", async (req, res, next) => {
+  try {
+
+    const game = await games_utils.getClosestGame();
+    if (game){
+      const stage_games=await games_utils.getCurrentStageGames(game[0].stage);
+
+    }
+ //   const game = await games_utils.getCurrentStageGames(req.params.stageNum);
+    res.status(200).send(stage_games);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

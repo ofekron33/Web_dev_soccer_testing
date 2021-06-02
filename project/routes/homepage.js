@@ -7,6 +7,10 @@ const players_utils= require("./utils/players_utils");
 const teams_utils = require("./utils/teams_utils");
 
 router.use(async function (req, res, next) {
+  if(!req.session){
+    throw { status: 404, message:"Must Be Logged in" };
+
+  }
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT UserID FROM users")
       .then((users) => {
@@ -44,8 +48,17 @@ router.use(async function (req, res, next) {
   router.put("/favoritePlayer/:playerId", async (req, res, next) => {
     try {
       const player_id = req.params.playerId;
+      if(!await players_utils.getPlayerDetail(player_id)){
+        throw { status: 406, message:"The player does not exists in the system" };
+      }
+      const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoritePlayers","playerID",req.params.playerId)
+      
+      if(CheckIfExsits){
+        throw { status: 406, message:"The player is  already in your favorites" };
+      }
+     
       await users_utils.markPlayerAsFavorite(req.session.user_id, player_id);
-      res.status(201).send("The player successfully saved as favorite");
+      res.status(201).send("The player was successfully added to favorites");
     } catch (error) {
       next(error);
     }
@@ -78,6 +91,15 @@ router.use(async function (req, res, next) {
   router.put("/favoriteteam/:teamId", async (req, res, next) => {
     try {
       const team_id = req.params.teamId;
+      if(!await teams_utils.getTeamDetailsbyID(team_id)){
+        throw { status: 406, message:"The team does not exists in the system" };
+      }
+      const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoriteTeam","teamID",req.params.teamId)
+      if(CheckIfExsits){
+        throw { status: 406, message:"The team is  already in your favorites" };
+      }
+     
+
       await users_utils.markTeamAsFavorite(req.session.user_id, team_id);
       res.status(201).send("The team was successfully saved in favorite");
     } catch (error) {
@@ -113,6 +135,13 @@ router.use(async function (req, res, next) {
   router.put("/favoritematches/:gameId", async (req, res, next) => {
     try {
       const game = req.params.gameId;
+      if(!await games_utils.getGameDetial(game)){
+        throw { status: 406, message:"The game does not exists in the system" };
+      }
+      const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoriteGames","gameID",req.params.gameId)
+      if(CheckIfExsits){
+        throw { status: 406, message:"The team is  already in your favorites" };
+      }
       await users_utils.markGameAsFavorite(req.session.user_id, game);
       res.status(201).send("The game was successfully saved in favorite");
     } catch (error) {

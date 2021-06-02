@@ -71,10 +71,18 @@ async function getFavoriteMatches(user_id) {
   return team_ids;
 }
 
+async function AddingFavoriteChecker(user_id,table_name,key_name,key_value){
+  const ans = await DButils.execQuery(
+    `select  ${key_name} from ${table_name}  where UserID='${user_id}' and ${key_name}=${key_value}`
+  );  
+if(ans.length>0){
+  return ans
+}
+}
 
 
-exports.markPlayerAsFavorite = markPlayerAsFavorite;
-exports.getFavoritePlayers = getFavoritePlayers;
+
+
 exports.removePlayerFromFavorites=removePlayerFromFavorites;
 exports.markTeamAsFavorite=markTeamAsFavorite;
 exports.removeTeamFromFavorites=removeTeamFromFavorites;
@@ -82,3 +90,4 @@ exports.getFavoriteTeams=getFavoriteTeams;
 exports.markGameAsFavorite=markGameAsFavorite;
 exports.removeGameFromFavorites=removeGameFromFavorites;
 exports.getFavoriteMatches=getFavoriteMatches;
+exports.AddingFavoriteChecker=AddingFavoriteChecker;

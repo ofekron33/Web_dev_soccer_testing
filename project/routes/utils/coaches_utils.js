@@ -65,6 +65,11 @@ async function extractRelevantCoachData(name,coaches) {
   
     return coachArr;
       }
- 
+
+async function filterCoachbyTeamName(coachList, TeamName) {
+  return coachList.filter(coach => coach.team_name.includes(TeamName));
+}
+
+exports.filterCoachbyTeamName = filterCoachbyTeamName;
 exports.getCoachById = getCoachById;
 exports.SearchCoachByname=SearchCoachByname;

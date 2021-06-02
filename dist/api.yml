@@ -74,7 +74,7 @@ paths:
     get:
       tags:
         - league
-      summary: Return the details about the current league
+      summary: Return the details about the current 
       responses:
         "200":
           description: data about the current league returned
@@ -86,7 +86,55 @@ paths:
                   $ref: "#/components/schemas/Leauge"
         "400":
           description: wrong input parameters
-  /game/{gameId}:
+
+
+  /game/allGames/:
+    get:
+      tags:
+        - Games
+      summary: return all the games in the season 
+      responses:
+        "200":
+          description: match
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        "400":
+          description: something went wrong
+
+  /game/getClosestGame:
+    get:
+      tags:
+        - Games
+      summary: returns the colset game in the leauge
+      responses:
+        "200":
+          description: match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: something went wrong
+  /game/getCurrentStageGames:
+    get:
+      tags:
+        - Games
+      summary: returns the current stage games
+      responses:
+        "200":
+          description: match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: something went wrong
+
+  /game/getDetails/{gameId}:
     get:
       tags:
         - Games
@@ -260,10 +308,10 @@ paths:
           explode: false
           schema:
             type: number
-            example: 234
+            example: 456421
       responses:
         "200":
-          description: OK. recipes on the way.
+          description: OK.
           content:
             application/json:
               schema:
@@ -319,6 +367,39 @@ paths:
 
         "400":
           description: Bad Request.
+
+  /coach/coachDetailByName/{coach_name}/filterbyTeam/{teamName}:
+    get:
+      tags:
+        - Coachs
+      summary: Search player by name
+      parameters:
+        - name: coach_name
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: J
+        - name: teamName
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: Horsens
+      responses:
+        "200":
+          description: data of specific player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "400":
+          description: Bad Request.
+          
   /player/playerFullDetails/{playerId}:
     get:
       tags:
@@ -345,7 +426,7 @@ paths:
         "204":
           description: Bad, No Content was found.
         "400":
-          description: Bad Request.
+          description: Bad Request.      
     # put:
     #   tags:
     #   - Players
@@ -389,6 +470,72 @@ paths:
                 $ref: "#/components/schemas/Player"
         "400":
           description: Bad Request.
+
+
+  /player/SearchPlayerByName/{playerName}/filterbyTeam/{teamName}:
+    get:
+      tags:
+        - Players
+      summary: Search player by name
+      parameters:
+        - name: playerName
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: jesper
+        - name: teamName
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: Lyngby
+      responses:
+        "200":
+          description: data of specific player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "400":
+          description: Bad Request.
+
+  /player/SearchPlayerByName/{playerName}/filterbyPosition/{position}:
+    get:
+      tags:
+        - Players
+      summary: Search player by name
+      parameters:
+        - name: playerName
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: jesper
+        - name: position
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+          example: 3
+      responses:
+        "200":
+          description: data of specific player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "400":
+          description: Bad Request.
+# /SearchPlayerByName/:playername/filterbyTeam/:teamName
 
   /teams/teamFullDetails/{teamId}:
     get:
@@ -579,6 +726,37 @@ paths:
           description: success
         "400":
           description: somting went wrong  
+
+  # /search/filter/{gameId}:
+  #   delete:
+  #     tags:
+  #       - Personal Page match
+  #     summary: Delete a game from the user's favorite game list
+  #     parameters:
+  #       - name: gameId
+  #         in: path
+  #         required: true
+
+  #     responses:
+  #       "200":
+  #         description: success
+  #       "400":
+  #         description: Bad Request.
+    # put:
+    #   tags:
+    #     - Personal Page match
+    #   summary: add a match to the user's favorites
+    #   parameters:
+    #   - name: gameId
+    #     in: path
+    #     required: true
+    #   responses:
+    #     "200":
+    #       description: success
+    #     "400":
+    #       description: somting went wrong 
+
+
 components:
   schemas:
     User:
@@ -632,10 +810,10 @@ components:
       properties:
         id:
           type: integer
-          example: 33
+          example: 17328
         Name:
           type: string
-          example: Maccabi Tel Aviv
+          example: Superliga
         Season:
           type: string
           example: 2020/2021
@@ -644,7 +822,7 @@ components:
           example: "1"
         country:
           type: string
-          example: Israel
+          example: Denmark
         games:
           type: array
           items:
@@ -655,30 +833,32 @@ components:
       properties:
         id:
           type: integer
-          example: 23
+          example: 82808
         fullName:
           type: string
-          example: Ronaldo Messi
+          example: Jesper Hansen
         teamName:
-          example: Maccabi Tel Aviv
+          example: Midtjylland
         image-url:
           type: string
           format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/24/82808.png
         position:
           type: integer
+          example: 1
 
     Coach:
       type: object
       properties:
         id:
           type: integer
-          example: 111
+          example: 456421
         fullName:
           type: string
-          example: zinedine zidane
+          example: Jess Thorup
         teamName:
           type: string
-          example: Real Madrid
+          example: København
         image-url:
           type: string
           format: URL
@@ -689,13 +869,13 @@ components:
       properties:
         id:
           type: integer
-          example: 84
+          example: 85
         teamName:
           type: string
-          example: Maccabi Tel Aviv
+          example: København
         coach-id:
           type: integer
-          example: 23
+          example: 456421
         players:
           type: array
           items:

@@ -9,16 +9,18 @@ async function getGameDetial(game_id) {
   if (!game_detiel){
     return null;
   }
-  const awayTeam =await  teams_utils.getTeamDetailsbyID(game_detiel.awayTeam);
-  const homeTeam = await teams_utils.getTeamDetailsbyID( game_detiel.homeTeam);
-  // const events = await getEvents(game_id);
+  // const awayTeam =await  teams_utils.getTeamDetailsbyID(game_detiel.awayTeam);
+  // const homeTeam = await teams_utils.getTeamDetailsbyID( game_detiel.homeTeam);
+  const events = await getEvents(game_id);
   return {
+    game_id: game_id,
     gameDate: game_detiel.gameDate,
-    homeTeam: homeTeam,
-    awayTeam: awayTeam,
+    homeTeam: game_detiel.homeTeam,
+    awayTeam: game_detiel.awayTeam,
     referee: game_detiel.referee,
     homescore: game_detiel.homeScore,
     awayScore: game_detiel.awayScore,
+    events: events
   };
 }
 
@@ -55,6 +57,7 @@ async function getEvents(game_id) {
   added_event.forEach((element) => {
     var obj = {
       eventType: element.eventType,
+      game_id: game_id,
       gameDate: element.gameDate,
       gameTime: element.gameTime,
       inGameMinute: element.inGameMinute,
@@ -64,22 +67,7 @@ async function getEvents(game_id) {
   })
   return added_event;
 } 
-return null;
-}
-async function getPlayersInfo(players_ids_list) {
-  let promises = [];
-  players_ids_list.map((id) =>
-    promises.push(
-      axios.get(`${api_domain}/players/${id}`, {
-        params: {
-          api_token: process.env.api_token,
-          include: "team.league",
-        },
-      })
-    )
-  );
-  let players_info = await Promise.all();
-  return extractRelevantPlayersData (players_info,true);
+  return event_Info;
 }
 
 async function getFavoriteMatchesDetails(game_ids) {
@@ -94,12 +82,68 @@ async function getFavoriteMatchesDetails(game_ids) {
 }
 
 
+async function returnGamesByTeamID(teamID) {
 
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games]
+    WHERE (homeTeam = ${teamID} or homeTeam = ${teamID}) ;`
+  );
 
+  // added_event.forEach((element) => {
+  //   var obj = {
+  //     eventType: element.eventType,
+  //     game_id: game_id,
+  //     gameDate: element.gameDate,
+  //     gameTime: element.gameTime,
+  //     inGameMinute: element.inGameMinute,
+  //     eventDescription: element.eventDescription,
+  //   }
+  //   event_Info.push(obj)
+  // })
 
+  games.forEach(async (element) => {
+    element.events =await getEvents(element.game_id)
+  })
+  return games;
+}
 
+async function returnAllGames() {
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games] ;`
+  );
+  return games;
+}
+
+async function getClosestGame() {
+  var pad = function (num) { return ('00' + num).slice(-2) };
+  var date;
+  date = new Date();
+  date = date.getUTCFullYear() + '-' +
+    pad(date.getUTCMonth() + 1) + '-' +
+    pad(date.getUTCDate())
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games] 
+      WHERE gameDate>'${date}'
+      ;`
+  );
+  games.sort((a,b)=> a.gameDate-b.gameDate )
+  return games;
+}
+
+async function getCurrentStageGames(stage_num) {
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games] 
+      WHERE stage=${stage_num};`
+  );
+  return games;
+}
+
+exports.returnAllGames = returnAllGames;
+exports.getClosestGame = getClosestGame;
+exports.returnGamesByTeamID = returnGamesByTeamID;
 exports.getGameDetial = getGameDetial;
 exports.AddEvent = AddEvent;
 exports.getEvents = getEvents;
 exports.updateGameDetial = updateGameDetial;
 exports.getFavoriteMatchesDetails=getFavoriteMatchesDetails;
+exports.getCurrentStageGames=getCurrentStageGames;

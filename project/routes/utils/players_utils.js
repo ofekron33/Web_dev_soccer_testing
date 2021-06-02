@@ -30,6 +30,7 @@ async function getPlayerDetail(id) {
   if (player.data.data.team && player.data.data.team.data.league) {
     if (player.data.data.team.data.league.data.id === 271) {
       return {
+        player_id: id,
         name: player.data.data.fullname,
         team_name: player.data.data.team.data.name,
         position: player.data.data.position_id,
@@ -76,11 +77,11 @@ function extractRelevantPlayersData(players_info, isPromise) {
       var league = element.team.data.league.data.id;
       if (league === 271) {
         var obj = {
+          player_id: element.player_id,
           name: element.fullname,
           position: element.position_id,
           image: element.image_path,
           team_name: element.team.data.name,
-          id: element.player_id
         }
         Player_arr.push(obj);
 
@@ -113,7 +114,17 @@ async function SearchPlayerByName(name) {
   return extractRelevantPlayersData(player, false);
 }
 
+async function filterPlayerbyTeamName(playerList,TeamName) {
+  return playerList.filter(player => player.team_name.includes(TeamName));
+}
 
+async function filterPlayerbyPosition(playerList, position) {
+  return playerList.filter(player => player.position === position);
+}
+
+
+exports.filterPlayerbyTeamName = filterPlayerbyTeamName;
+exports.filterPlayerbyPosition = filterPlayerbyPosition;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayerDetail = getPlayerDetail;
