@@ -111,23 +111,12 @@ async function returnGamesByTeamID(teamID) {
 
   const games = await DButils.execQuery(
     ` SELECT * FROM [dbo].[Games]
-    WHERE (homeTeam = ${teamID} or homeTeam = ${teamID}) ;`
+    WHERE (homeTeam = ${teamID} or awayTeam = ${teamID}) ;`
   );
 
-  // added_event.forEach((element) => {
-  //   var obj = {
-  //     eventType: element.eventType,
-  //     game_id: game_id,
-  //     gameDate: element.gameDate,
-  //     gameTime: element.gameTime,
-  //     inGameMinute: element.inGameMinute,
-  //     eventDescription: element.eventDescription,
-  //   }
-  //   event_Info.push(obj)
-  // })
 
   games.forEach(async (element) => {
-    element.events =await getEvents(element.game_id)
+    element.events =await getEvents(element.gameID)
   })
   return games;
 }

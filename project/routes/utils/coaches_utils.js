@@ -22,6 +22,7 @@ async function getCoachById(id) {
   if (coach.data.data.team && coach.data.data.team.data.league) {
     if (coach.data.data.team.data.league.data.id === 271) {
       return {
+        coach_id: id,
         name: coach.data.data.fullname,
         team_name: coach.data.data.team.data.name,
         image: coach.data.data.image_path,
@@ -55,6 +56,7 @@ async function extractRelevantCoachData(name,coaches) {
       if(element.coach.data.fullname.toLowerCase().includes(name.toLowerCase())){ 
         //#TODO LOWERCASE NAME SEARCHES
          var obj = {
+           coach_id: element.coach.data.coach_id,
           name:element.coach.data.fullname,
           team_name: element.name,
           image: element.coach.data.image_path,

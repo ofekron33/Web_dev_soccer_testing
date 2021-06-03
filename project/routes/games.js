@@ -54,11 +54,11 @@ router.get("/getCurrentStageGames/", async (req, res, next) => {
   try {
 
     const game = await games_utils.getClosestGame();
-    if (game){
-      const stage_games=await games_utils.getCurrentStageGames(game[0].stage);
+    if (!game){
+      throw{status:406, message: "There is no games in this stage"}
 
     }
- //   const game = await games_utils.getCurrentStageGames(req.params.stageNum);
+    const stage_games=await games_utils.getCurrentStageGames(game[0].stage);
     res.status(200).send(stage_games);
   } catch (error) {
     next(error);
