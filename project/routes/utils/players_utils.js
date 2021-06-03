@@ -19,7 +19,8 @@ async function getPlayerIdsByTeam(team_id) {
 
 
 async function getPlayerDetail(id) {
-  const player = await axios.get(`${api_domain}/players/${id}`,
+  try{
+    const player = await axios.get(`${api_domain}/players/${id}`,
     {
       params: {
         include: "team.league",
@@ -45,9 +46,11 @@ async function getPlayerDetail(id) {
     }
   }
 
+}catch{
+  "invalid id"
 }
 
-
+  }
 async function getPlayersInfo(players_ids_list) {
   let promises = [];
   players_ids_list.map((id) =>

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const LEAGUE_ID = 271;
+const DButils = require("./DButils");
 
 async function getLeagueDetails() {
   const league = await axios.get(
@@ -26,4 +27,32 @@ async function getLeagueDetails() {
     // next game details should come from DB
   };
 }
+
+
+async function getReferees() {
+
+  const referes = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Referees] ;`);
+  const referesArr=[];
+  referes.forEach(element => {
+    referesArr.push(element.refName)
+  });
+  return referesArr;
+}
+
+async function getStadiums() {
+
+  const stadiums = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Venue] ;`);
+  const stadiumsArr = [];
+  stadiums.forEach(element => {
+    stadiumsArr.push(element.name)
+  });
+  return stadiumsArr;
+}
+
+
+
+exports.getReferees = getReferees;
+exports.getStadiums = getStadiums;
 exports.getLeagueDetails = getLeagueDetails;

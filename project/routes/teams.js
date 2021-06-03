@@ -30,9 +30,9 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
 router.get("/teamByName/:teamName", async (req, res, next) => {
   let team_details = [];
   try {
-    const teams_stats = await teams_utils.getTeamDetailsbyName(
-      req.params.teamName
-    );
+    const teams_stats = await teams_utils.getTeamDetailsbyName(req.params.teamName);
+    req.session.search={[req.params.teamName]:teams_stats};
+
     // we should keep implementing team page.....
 
     res.send(teams_stats);

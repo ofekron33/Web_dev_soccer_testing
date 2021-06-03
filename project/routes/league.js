@@ -12,4 +12,22 @@ router.get("/getDetails", async (req, res, next) => {
   }
 });
 
+router.get("/Referees", async (req, res, next) => {
+  try {
+    const ref_details = await league_utils.getReferees();
+    res.send(ref_details);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/Stadiums", async (req, res, next) => {
+  try {
+    const Stadiums_details = await league_utils.getStadiums();
+    res.send(Stadiums_details);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

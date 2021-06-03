@@ -24,6 +24,8 @@ router.get("/playerFullDetails/:playerid", async (req, res, next) => {
 router.get("/SearchPlayerByName/:playername", async (req, res, next) => {
     try {
       const player_details = await players_utils.SearchPlayerByName(req.params.playername);
+      req.session.search={[req.params.playername]:player_details};
+
       res.send(player_details);
     } catch (error) {
       next(error);  
@@ -35,6 +37,8 @@ router.get("/SearchPlayerByName/:playername/filterbyTeam/:teamName", async (req,
   try {
     const player_details = await players_utils.SearchPlayerByName(req.params.playername);
     const filterd_player_details = await players_utils.filterPlayerbyTeamName(player_details, req.params.teamName);
+    req.session.search={[req.params.playername]:[filterd_player_details,[req.params.teamName]]};
+
     res.send(filterd_player_details);
   } catch (error) {
     next(error);
@@ -46,6 +50,8 @@ router.get("/SearchPlayerByName/:playername/filterbyPosition/:position", async (
     const pos = parseInt(req.params.position);
     const player_details = await players_utils.SearchPlayerByName(req.params.playername);
     const filterd_player_details = await players_utils.filterPlayerbyPosition(player_details, pos);
+    req.session.search={[req.params.playername]:[filterd_player_details,[req.params.position]]};
+
     res.send(filterd_player_details);
   } catch (error) {
     next(error);

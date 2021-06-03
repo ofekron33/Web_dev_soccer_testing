@@ -6,32 +6,33 @@ const users_utils= require("./utils/users_utils");
 const players_utils= require("./utils/players_utils");
 const teams_utils = require("./utils/teams_utils");
 
+
 router.use(async function (req, res, next) {
-  if(!req.session){
-    throw { status: 404, message:"Must Be Logged in" };
-
-  }
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT UserID FROM users")
-      .then((users) => {
-        if (users.find((x) => x.user_id === req.session.user_id)) {
-          req.user_id = req.session.user_id;
-        }
-        next();
-      })
-      .catch((error) => next());
-  } else {
-    res.sendStatus(401);
-    next();
+      DButils.execQuery("SELECT UserID FROM Users")
+          .then((users) => {
+              if (users.find((x) => x.UserID === req.session.user_id)) {
+                  req.user_id = req.session.user_id;
+                  next();
+                  
+              } else {
+                  res.sendStatus(401);
+              }
 
+          }).catch((err) => next(err));
+
+  } else {
+      res.sendStatus(401);
   }
 });
 
 
 
 
+
   router.get("/favoriteplayer", async (req, res, next) => {
     try {
+
       const user_id = req.session.user_id;
       let favorite_players = {};
       const player_ids = await users_utils.getFavoritePlayers(user_id);
@@ -47,8 +48,9 @@ router.use(async function (req, res, next) {
 
   router.put("/favoritePlayer/:playerId", async (req, res, next) => {
     try {
+      
       const player_id = req.params.playerId;
-      if(!await players_utils.getPlayerDetail(player_id)){
+      if(!isNormalInteger(req.params.playerId)||!await players_utils.getPlayerDetail(player_id)){
         throw { status: 406, message:"The player does not exists in the system" };
       }
       const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoritePlayers","playerID",req.params.playerId)
@@ -66,8 +68,17 @@ router.use(async function (req, res, next) {
 
   router.delete("/favoritePlayer/:playerId", async (req, res, next) => {
     try {
+      if (!isNormalInteger(req.params.playerId)){
+        throw { status: 406, message:"invalid player id" };
+      }
+
       const player_id = parseInt(req.params.playerId);
       const cookie= parseInt(req.session.user_id);
+      const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoritePlayers","playerID",req.params.playerId)
+      
+      if(player_id==="{playerId}"||!CheckIfExsits){
+        throw { status: 406, message:"The player is  not   in your favorites" };
+      }
       await users_utils.removePlayerFromFavorites(cookie, player_id);
       res.status(201).send("The player was  successfully removed from  favorites");
     } catch (error) {
@@ -77,6 +88,7 @@ router.use(async function (req, res, next) {
 
   router.get("/favoriteteam", async (req, res, next) => {
     try {
+      
       const user_id = req.session.user_id;
       //let favorite_teams = {};
       const team_ids = await users_utils.getFavoriteTeams(user_id);
@@ -90,6 +102,9 @@ router.use(async function (req, res, next) {
       
   router.put("/favoriteteam/:teamId", async (req, res, next) => {
     try {
+      if (!isNormalInteger(req.params.teamId)){
+        throw { status: 406, message:"invalid team id" };
+      }
       const team_id = req.params.teamId;
       if(!await teams_utils.getTeamDetailsbyID(team_id)){
         throw { status: 406, message:"The team does not exists in the system" };
@@ -109,8 +124,15 @@ router.use(async function (req, res, next) {
 
   router.delete("/favoriteteam/:teamId", async (req, res, next) => {
     try {
+      if (!isNormalInteger(req.params.teamId)){
+        throw { status: 406, message:"invalid team id" };
+      }
       const team_id = parseInt(req.params.teamId);
       const cookie= parseInt(req.session.user_id);
+      const CheckIfExsits=await teams_utils.AddingFavoriteChecker(req.session.user_id,"FavoriteTeam","teamID",req.params.teamId)
+      if(!CheckIfExsits){
+        throw { status: 406, message:"The team is  not in your favorites" };
+      }
       await users_utils.removeTeamFromFavorites(cookie, team_id);
       res.status(201).send("The team was  successfully removed from  favorites");
     } catch (error) {
@@ -135,7 +157,8 @@ router.use(async function (req, res, next) {
   router.put("/favoritematches/:gameId", async (req, res, next) => {
     try {
       const game = req.params.gameId;
-      if(!await games_utils.getGameDetial(game)){
+      
+      if(!isNormalInteger(req.params.gameId)||!await games_utils.getGameDetial(game)){
         throw { status: 406, message:"The game does not exists in the system" };
       }
       const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoriteGames","gameID",req.params.gameId)
@@ -152,12 +175,21 @@ router.use(async function (req, res, next) {
 
   router.delete("/favoritematches/:gameId", async (req, res, next) => {
     try {
+      if (!isNormalInteger(req.params.gameId)){
+        throw { status: 406, message:"invalid game id" };
+      }
       const game = req.params.gameId;
+      const CheckIfExsits=await users_utils.AddingFavoriteChecker(req.session.user_id,"FavoriteGames","gameID",req.params.gameId)
+      if(!CheckIfExsits){
+        throw { status: 406, message:"The game  is  not  in your favorites" };
+      }
       await users_utils.removeGameFromFavorites(req.session.user_id, game);
       res.status(201).send("The game was successfully removed from favorites");
     } catch (error) {
       next(error);
     }
   });
-
+  function isNormalInteger(str) {
+    return /^\+?(0|[1-9]\d*)$/.test(str);
+  }
   module.exports = router;

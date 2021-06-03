@@ -41,6 +41,7 @@ router.get("/allGames/", async (req, res, next) => {
 });
 
 router.get("/getClosestGame/", async (req, res, next) => {
+    
   try {
     const game = await games_utils.getClosestGame();
     res.status(200).send(game);

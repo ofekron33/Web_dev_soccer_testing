@@ -34,7 +34,7 @@ router.post("/", async (req, res, next) => {
         const date = req.body.gameDate
         const games = await DButils.execQuery(
             `SELECT stage,homeTeam,awayTeam FROM dbo.Games 
-      WHERE homeTeam = ${req.body.homeTeam} AND awayTeam=${req.body.awayTeam} AND stage='${req.body.stage}';`
+      WHERE homeTeam = ${req.body.homeTeam} AND awayTeam=${req.body.awayTeam} AND stage='${req.body.stageID}';`
         );
         if (games.length != 0)
             throw { status: 409, message: "Game already in system" };
@@ -43,7 +43,12 @@ router.post("/", async (req, res, next) => {
         const awayteam = await teams_utils.getTeamDetailsbyID(req.body.awayTeam);
         if (!hometeam || (!awayteam))
             throw { status: 409, message: "One of the ids are not in api" };
-
+        if (! await games_utils.isReferee(req.body.referee)){
+            throw { status: 409, message: "The Referee isnt in the system" };
+        }
+        if (! await games_utils.isStadium(req.body.stadium)) {
+            throw { status: 409, message: "The Stadium isnt in the system" };
+        }
         await DButils.execQuery(
             `INSERT INTO dbo.Games (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
             '${req.body.gameDate}' , ${req.body.homeTeam}, ${req.body.awayTeam},${req.body.stageID},'${req.body.stadium}','${req.body.referee}')`

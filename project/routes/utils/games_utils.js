@@ -81,6 +81,31 @@ async function getFavoriteMatchesDetails(game_ids) {
     return  game_details;
 }
 
+async function isReferee(refereeName) {
+
+  const referes = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Referees]
+    WHERE refName = '${refereeName}' ;`
+  );
+  if (referes.length === 0){
+    return false;
+  }
+  return true;
+}
+
+
+async function isStadium(StadiumName) {
+
+  const stadiums = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Venue]
+    WHERE name = '${StadiumName}' ;`
+  );
+  if (stadiums.length === 0) {
+    return false;
+  }
+  return true;
+}
+
 
 async function returnGamesByTeamID(teamID) {
 
@@ -139,6 +164,8 @@ async function getCurrentStageGames(stage_num) {
 }
 
 exports.returnAllGames = returnAllGames;
+exports.isStadium = isStadium;
+exports.isReferee = isReferee;
 exports.getClosestGame = getClosestGame;
 exports.returnGamesByTeamID = returnGamesByTeamID;
 exports.getGameDetial = getGameDetial;
