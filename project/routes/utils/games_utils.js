@@ -155,7 +155,19 @@ async function getCurrentStageGames(stage_num) {
   );
   return games;
 }
-
+async function getGameCheck(home_team,away_team,stage_id) {
+const games = await DButils.execQuery(
+  `SELECT stage,homeTeam,awayTeam FROM dbo.Games 
+WHERE homeTeam = ${home_team} AND awayTeam=${away_team} AND stage='${stage_id}';`
+);
+return games;
+}
+async function InsertGameToDB(date,home_team,away_team,stage_id,stadium,referee) {
+await DButils.execQuery(
+  `INSERT INTO dbo.Games (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
+  '${date}' , ${home_team}, ${away_team},${stage_id},'${stadium}','${referee}')`
+);
+}
 exports.returnAllGames = returnAllGames;
 exports.isStadium = isStadium;
 exports.isReferee = isReferee;
@@ -167,3 +179,5 @@ exports.getEvents = getEvents;
 exports.updateGameDetial = updateGameDetial;
 exports.getFavoriteMatchesDetails=getFavoriteMatchesDetails;
 exports.getCurrentStageGames=getCurrentStageGames;
+exports.getGameCheck=getGameCheck;
+exports.InsertGameToDB=InsertGameToDB;

@@ -32,10 +32,7 @@ router.post("/", async (req, res, next) => {
             throw { status: 409, message: "Team Cant play agianst itself." };
 
         const date = req.body.gameDate
-        const games = await DButils.execQuery(
-            `SELECT stage,homeTeam,awayTeam FROM dbo.Games 
-      WHERE homeTeam = ${req.body.homeTeam} AND awayTeam=${req.body.awayTeam} AND stage='${req.body.stageID}';`
-        );
+        const games = await games_utils.getGameCheck(req.body.homeTeam,req.body.awayTeam,req.body.stageID);
         if (games.length != 0)
             throw { status: 409, message: "Game already in system" };
 
@@ -49,11 +46,10 @@ router.post("/", async (req, res, next) => {
         if (! await games_utils.isStadium(req.body.stadium)) {
             throw { status: 409, message: "The Stadium isnt in the system" };
         }
-        await DButils.execQuery(
-            `INSERT INTO dbo.Games (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
-            '${req.body.gameDate}' , ${req.body.homeTeam}, ${req.body.awayTeam},${req.body.stageID},'${req.body.stadium}','${req.body.referee}')`
-        );
+        games_utils.InsertGameToDB(req.body.gameDate,req.body.homeTeam,req.body.awayTeam,req.body.stageID,req.body.stadium,req.body.referee)
+        
         res.status(201).send("Game created");
+        
     } catch (error) {
         next(error);
     }
