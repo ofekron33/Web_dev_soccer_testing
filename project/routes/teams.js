@@ -14,10 +14,13 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
     const team_stats = await teams_utils.getTeamDetailsbyID(
       req.params.teamId
     );
+
     const game_stats = await games_utils.returnGamesByTeamID(
       req.params.teamId
       );
-
+    if (!team_stats || !game_stats || !players_details) {
+      throw { status: 404, message: "There is no info about this id" };
+    }
     team_stats.players = players_details;
     team_stats.games = game_stats;
     // team_details.push(team_stats,players_details);

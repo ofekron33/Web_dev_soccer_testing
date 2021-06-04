@@ -396,7 +396,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Player"
+                type: array
+                items:
+                 $ref: "#/components/schemas/PlayerShort"
         "400":
           description: Bad Request.
           
@@ -461,13 +463,16 @@ paths:
           explode: false
           schema:
             type: string
+          example: jesper
       responses:
         "200":
           description: data of specific player
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Player"
+                type: array
+                items:
+                 $ref: "#/components/schemas/PlayerShort"
         "400":
           description: Bad Request.
 
@@ -476,7 +481,7 @@ paths:
     get:
       tags:
         - Players
-      summary: Search player by name
+      summary: Search player by name filter by teamName
       parameters:
         - name: playerName
           in: path
@@ -500,7 +505,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Player"
+                type: array
+                items:
+                 $ref: "#/components/schemas/PlayerShort"
         "400":
           description: Bad Request.
 
@@ -508,7 +515,7 @@ paths:
     get:
       tags:
         - Players
-      summary: Search player by name
+      summary: Search player by name fillter by position
       parameters:
         - name: playerName
           in: path
@@ -532,10 +539,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Player"
+                type: array
+                items:
+                 $ref: "#/components/schemas/PlayerShort"
         "400":
           description: Bad Request.
-# /SearchPlayerByName/:playername/filterbyTeam/:teamName
 
   /teams/teamFullDetails/{teamId}:
     get:
@@ -560,8 +568,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Team"
-        "204":
-          description: Bad, No Content was found.
         "400":
           description: Bad Request.
 
@@ -579,14 +585,15 @@ paths:
           schema:
             type: string
           example: Horsens
-
       responses:
         "200":
-          description: Data of specific user
+          description: OK.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamShort"
         "400":
           description: Bad Request.
 
@@ -777,37 +784,6 @@ paths:
                 items:
                   type: string 
                 example: ["MCH Arena",  "Right to Dream Park"]
-
-  # /search/filter/{gameId}:
-  #   delete:
-  #     tags:
-  #       - Personal Page match
-  #     summary: Delete a game from the user's favorite game list
-  #     parameters:
-  #       - name: gameId
-  #         in: path
-  #         required: true
-
-  #     responses:
-  #       "200":
-  #         description: success
-  #       "400":
-  #         description: Bad Request.
-    # put:
-    #   tags:
-    #     - Personal Page match
-    #   summary: add a match to the user's favorites
-    #   parameters:
-    #   - name: gameId
-    #     in: path
-    #     required: true
-    #   responses:
-    #     "200":
-    #       description: success
-    #     "400":
-    #       description: somting went wrong 
-
-
 components:
   schemas:
     User:
@@ -914,6 +890,25 @@ components:
           type: int
           example: 75
 
+    PlayerShort:
+      type: object
+      properties:
+        player_id:
+          type: integer
+          example: 82808
+        name:
+          type: string
+          example: Jesper Hansen
+        position:
+          type: integer
+          example: 1
+        team_name:
+          example: Midtjylland
+        image:
+          type: string
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/24/82808.png
+      
     Coach:
       type: object
       properties:
@@ -934,15 +929,21 @@ components:
     Team:
       type: object
       properties:
-        id:
+        team_id:
           type: integer
           example: 85
-        teamName:
+        team_name:
           type: string
           example: København
+        logo_path:
+          type: url
+          example: "https://cdn.sportmonks.com/images//soccer/teams/21/85.png"
         coach-id:
           type: integer
           example: 456421
+        coach-name:
+          type: string
+          example: Jess Thorup
         players:
           type: array
           items:
@@ -951,6 +952,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Game"
+
+    
+    TeamShort:
+      type: object
+      properties:
+        team_id:
+          type: integer
+          example: 85
+        teamName:
+          type: string
+          example: København
+        logo_path:
+          type: url
+          example: "https://cdn.sportmonks.com/images//soccer/teams/21/85.png"
 
     Game:
       type: object
