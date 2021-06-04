@@ -85,7 +85,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Leauge"
         "400":
-          description: wrong input parameters
+          description: There is no current league taking place
 
 
   /game/allGames/:
@@ -187,6 +187,7 @@ paths:
                   type: integer
                   example: 6
                 stadium: 
+
                   type: String
                   example: Silverdo
       responses:
@@ -738,7 +739,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HomePage/properties/Referee"
+                type: array
+                items:
+                  type: string 
+                example: ["Daniel Izmaylov", "Ofek Ronen" ]
 
   /league/Stadiums/:
     get:
@@ -751,8 +755,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "MCH Arena"
+                type: array
+                items:
+                  type: string 
+                example: ["MCH Arena",  "Right to Dream Park"]
 
   # /search/filter/{gameId}:
   #   delete:

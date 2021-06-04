@@ -55,17 +55,21 @@ async function getEvents(game_id) {
   const event_Info = [];
   if(added_event){
   added_event.forEach((element) => {
+    const time = element.gameTime.getHours() + ':' +
+      (element.gameTime.getMinutes())+ ':' +
+      element.gameTime.getSeconds();
+
     var obj = {
       eventType: element.eventType,
       game_id: game_id,
       gameDate: element.gameDate,
-      gameTime: element.gameTime,
+      gameTime: time,
       inGameMinute: element.inGameMinute,
       eventDescription: element.eventDescription,
     }
     event_Info.push(obj)
   })
-  return added_event;
+    return event_Info;
 } 
   return event_Info;
 }

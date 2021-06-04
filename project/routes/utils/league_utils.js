@@ -3,6 +3,7 @@ const LEAGUE_ID = 271;
 const DButils = require("./DButils");
 
 async function getLeagueDetails() {
+  try{
   const league = await axios.get(
     `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
     {
@@ -26,6 +27,10 @@ async function getLeagueDetails() {
     current_stage_name: stage.data.data.name,
     // next game details should come from DB
   };
+}
+catch (error) {
+  return null
+}
 }
 
 
