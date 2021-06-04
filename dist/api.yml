@@ -50,9 +50,8 @@ paths:
       responses:
         "200":
           description: >
-            User was found in the DB and authenitcated successfully.
-            The session ID is returned in a cookie named `session`. 
-            You should include this cookie in subsequent requests
+            login succeeded
+
           # headers:
           #   Set-Cookie:
           #     schema:
@@ -178,8 +177,8 @@ paths:
                   type: integer
                   example: 85
                 awayTeam:
-                  type: 390
-                  example: 123
+                  type: integer
+                  example: 211
                 referee:
                   type: String
                   example: John
@@ -424,8 +423,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Player"
-        "204":
-          description: Bad, No Content was found.
+        "406":
+          description: no player with this id.
         "400":
           description: Bad Request.      
     # put:
@@ -622,8 +621,7 @@ paths:
                 $ref: "#/components/schemas/HomePage/properties/favorite_teams"
         "401":
           description: User needs to be logged in
-        "400":
-          description: somting went wrong
+
 
   /homepage/favoriteplayer/{playerId}:
     put:
@@ -636,9 +634,13 @@ paths:
           required: true
       responses:
         "200":
-          description: success
+          description: The player was successfully added to favorites
         "400":
-          description: somting went wrong
+          description: The player does not exists in the system.
+        "401":
+          description: User needs to be logged in.
+        "406":
+          description: The player is  already in your favorites.
     delete:
       tags:
         - Personal Page player
@@ -649,9 +651,13 @@ paths:
           required: true
       responses:
         "200":
-          description: success
+          description: The player was  successfully removed from  favorites
         "400":
-          description: Bad Request.
+          description: invalid player id.
+        "401":
+          description: User needs to be logged in.
+        "406":
+          description: The player is not in your favorites.
   /homepage/favoriteteam/{teamId}:
     put:
       tags:
@@ -663,9 +669,13 @@ paths:
           required: true
       responses:
         "200":
-          description: success
+          description: The team was successfully added to your favorite
         "400":
-          description: somting went wrong
+          description: invalid team id.
+        "401":
+          description: User needs to be logged in.
+        "406":
+          description: The team is  already in your favorites.
     delete:
       tags:
         - Personal Page team
@@ -680,9 +690,13 @@ paths:
             type: integer
       responses:
         "200":
-          description: success
+          description: The team was  successfully removed from  favorites
         "400":
-          description: Bad Request.
+          description: invalid team id.
+        "401":
+          description: User needs to be logged in.
+        "406":
+          description: The team is  not in your favorites.
   /homepage/favoritematches:
     get:
       tags:
@@ -697,8 +711,6 @@ paths:
                 $ref: "#/components/schemas/HomePage/properties/favorite_matches"
         "401":
           description: User needs to be logged in
-        "400":
-          description: somting went wrong
   /homepage/favoritematches/{gameId}:
     delete:
       tags:
@@ -708,12 +720,15 @@ paths:
         - name: gameId
           in: path
           required: true
-
       responses:
         "200":
-          description: success
+          description: The game was successfully removed from favorites
         "400":
-          description: Bad Request.
+          description: invalid game id
+        "401":
+          description: User needs to be logged in
+        "406":
+          description: The game  is  not  in your favorites.
     put:
       tags:
         - Personal Page match
@@ -724,10 +739,13 @@ paths:
         required: true
       responses:
         "200":
-          description: success
+          description: The game was successfully saved in favorite
         "400":
-          description: somting went wrong  
-
+          description: The game does not exists in the system 
+        "401":
+          description: User needs to be logged in
+        "406":
+          description: The team is  already in your favorites
   /league/Referees/:
     get:
       tags:
@@ -830,7 +848,7 @@ components:
           example: 33
         Name:
           type: string
-          example: Maccabi Tel Aviv
+          example: Dani
         image-url:
           type: string
           format: URL
@@ -864,21 +882,37 @@ components:
     Player:
       type: object
       properties:
-        id:
+        player_id:
           type: integer
           example: 82808
-        fullName:
+        name:
           type: string
           example: Jesper Hansen
-        teamName:
+        team_name:
           example: Midtjylland
-        image-url:
-          type: string
-          format: URL
-          example: https://cdn.sportmonks.com/images/soccer/players/24/82808.png
         position:
           type: integer
           example: 1
+        image:
+          type: string
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/24/82808.png
+        nationality:
+          type: string
+          example: Australian
+        birth_date:
+          type: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "1983-05-30"
+        birthcountry:
+          type: string
+          example: Austrailia
+        height:
+          type: int
+          example: 182
+        weight:
+          type: int
+          example: 75
 
     Coach:
       type: object
@@ -921,24 +955,27 @@ components:
     Game:
       type: object
       properties:
+        game_id:
+          type: int
+          example: 7
         gameDate:
           type: string
           example: 19941030
         homeTeam:
-          $ref: "#/components/schemas/Team"
+          $ref: "#/components/schemas/Team/properties/id"
         awayTeam:
-          $ref: "#/components/schemas/Team"
+          $ref: "#/components/schemas/Team/properties/id"
         referees:
-          $ref: "#/components/schemas/Referee"
-        events:
-          type: array
-          items:
-            $ref: "#/components/schemas/Event"
+          $ref: "#/components/schemas/Referee/properties/Name"
         homeScore:
           type: integer
           example: 2
         awayScore:
           example: 3
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
 
     Event:
       type: object
@@ -960,7 +997,7 @@ components:
           example: 13
         eventDescription:
           type: string
-          example: goal by Ronaldo
+          example: foul by Ronaldo
 
     HomePage:
       type: object
