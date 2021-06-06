@@ -13,7 +13,7 @@ router.use(async function (req, res, next) {
                 if (users.find((x) => x.UserID === req.session.user_id)) {
                     req.user_id = req.session.user_id;
                     next();
-                    
+
                 } else {
                     res.sendStatus(401);
                 }
@@ -32,7 +32,13 @@ router.post("/", async (req, res, next) => {
             throw { status: 409, message: "Team Cant play agianst itself." };
 
         const date = req.body.gameDate
-        const games = await games_utils.getGameCheck(req.body.homeTeam,req.body.awayTeam,req.body.stageID);
+        if (! await games_utils.isStage(req.body.stageName)) {
+            throw { status: 409, message: "The Stage is not in the system" };
+        }
+        const games = await DButils.execQuery(
+            `SELECT stage,homeTeam,awayTeam FROM dbo.Games 
+      WHERE homeTeam = ${req.body.homeTeam} AND awayTeam=${req.body.awayTeam} AND stage='${req.body.stageName}';`
+        );
         if (games.length != 0)
             throw { status: 409, message: "Game already in system" };
 
@@ -40,16 +46,18 @@ router.post("/", async (req, res, next) => {
         const awayteam = await teams_utils.getTeamDetailsbyID(req.body.awayTeam);
         if (!hometeam || (!awayteam))
             throw { status: 409, message: "One of the ids are not in api" };
-        if (! await games_utils.isReferee(req.body.referee)){
-            throw { status: 409, message: "The Referee isnt in the system" };
+
+        if (! await games_utils.isReferee(req.body.referee)) {
+            throw { status: 409, message: "The Referee is not in the system" };
         }
         if (! await games_utils.isStadium(req.body.stadium)) {
-            throw { status: 409, message: "The Stadium isnt in the system" };
+            throw { status: 409, message: "The Stadium is not in the system" };
         }
-        games_utils.InsertGameToDB(req.body.gameDate,req.body.homeTeam,req.body.awayTeam,req.body.stageID,req.body.stadium,req.body.referee)
-        
+        await DButils.execQuery(
+            `INSERT INTO dbo.Games (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
+            '${req.body.gameDate}' , ${req.body.homeTeam}, ${req.body.awayTeam},'${req.body.stageName}','${req.body.stadium}','${req.body.referee}')`
+        );
         res.status(201).send("Game created");
-        
     } catch (error) {
         next(error);
     }
@@ -60,7 +68,7 @@ router.put("/:gameId", async (req, res, next) => {
         const game = await games_utils.getGameDetial(req.params.gameId);
         if (!game)
             throw { status: 409, message: "There is no game" };
-        var gamedate=game.gameDate;
+        var gamedate = game.gameDate;
         var today = new Date();
         if (gamedate > today)
             throw { status: 409, message: "The game didn't happen yet." };

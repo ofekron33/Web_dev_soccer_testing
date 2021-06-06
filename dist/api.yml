@@ -181,14 +181,13 @@ paths:
                   example: 211
                 referee:
                   type: String
-                  example: John
-                stageID:
-                  type: integer
-                  example: 6
-                stadium: 
-
+                  example: Daniel Izmaylov
+                stageName:
                   type: String
-                  example: Silverdo
+                  example: Regular Season
+                stadium: 
+                  type: String
+                  example: Sydbank Park
       responses:
         "201":
           description: Game created
@@ -769,6 +768,22 @@ paths:
                   type: string 
                 example: ["Daniel Izmaylov", "Ofek Ronen" ]
 
+  /league/Stages/:
+    get:
+      tags:
+        - league
+      summary: Get all available Referees
+      responses:
+        "200":
+          description: all available Referees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string 
+                example: ["Conference League Play-offs-Final","Regular Season"]
+
   /league/Stadiums/:
     get:
       tags:
@@ -977,9 +992,9 @@ components:
           type: string
           example: 19941030
         homeTeam:
-          $ref: "#/components/schemas/Team/properties/id"
+          $ref: "#/components/schemas/Team/properties/team_id"
         awayTeam:
-          $ref: "#/components/schemas/Team/properties/id"
+          $ref: "#/components/schemas/Team/properties/team_id"
         referees:
           $ref: "#/components/schemas/Referee/properties/Name"
         homeScore:
@@ -997,7 +1012,7 @@ components:
       properties:
         gameId:
           type: integer
-          example: 12
+          example: 7
         eventType:
           type: string
           example: "red Card"
