@@ -87,6 +87,37 @@ paths:
           description: There is no current league taking place
 
 
+
+  /gamechange/MakeLeague/:
+    post:
+      tags:
+        - league; Admin
+      summary: Make League games out of current teams and referees. 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Type:
+                  type: integer
+                  example: 1
+      responses:
+        "200":
+          description: data about the current league returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Leauge"
+        "400":
+          description: There is no current league taking place
+
+
+
+
   /game/allGames/:
     get:
       tags:
