@@ -167,6 +167,69 @@ async function getCurrentStageGames(stage_num) {
   return games;
 }
 
+
+<<<<<<< HEAD
+async function getCurrentStageGames(stage_num) {
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games] 
+      WHERE stage=${stage_num};`
+  );
+  return games;
+}
+
+async function getCurrentStageGames(matchList, referreList) {
+  matchList.forEach(element => {
+    
+  });
+}
+
+=======
+
+async function AddDateToGames(matches) {
+  var counter = 1;
+  var date =new Date();
+  date =   addDays(date, 50);
+  matches.forEach((element) => {
+    element.forEach((match) => {
+      match[2]=DateFormatter(date);
+      match[3]=counter;
+//      EnterGamesToDBHelper(date, match[0].TeamId, match[1].TeamId, counter, match[0].Stadium, match[0].referee)
+      date = addDays(date, 1);
+    }
+    )
+    counter += 1;
+  }
+  )
+  return matches;
+}
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+function DateFormatter(date) {
+  var pad = function (num) { return ('00' + num).slice(-2) };
+  date = date.getUTCFullYear() + '-' +
+    pad(date.getUTCMonth() + 1) + '-' +
+    pad(date.getUTCDate())
+  return date;
+}
+async function EnterGameToDB(date, homeTeam, awayTeam, stage, stadium, ref) {
+  const added_match = await DButils.execQuery(
+
+    `INSERT INTO dbo.GamesTest (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
+      '${date}' , ${homeTeam}, ${awayTeam},'${stage}','${stadium}','${ref}')`
+  );
+  return  added_match;
+
+}
+
+
+
+
+
+
+>>>>>>> ofek
 exports.returnAllGames = returnAllGames;
 exports.isStage = isStage;
 exports.isStadium = isStadium;
@@ -179,3 +242,6 @@ exports.getEvents = getEvents;
 exports.updateGameDetial = updateGameDetial;
 exports.getFavoriteMatchesDetails = getFavoriteMatchesDetails;
 exports.getCurrentStageGames = getCurrentStageGames;
+exports.EnterGameToDB = EnterGameToDB;
+exports.AddDateToGames=AddDateToGames;
+exports.EnterGameToDB=EnterGameToDB

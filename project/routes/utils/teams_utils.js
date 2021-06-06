@@ -1,5 +1,22 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const DButils = require("./DButils");
+
+
+
+
+
+async function getAllTeams(username) {
+  const teams = await DButils.execQuery(
+    "SELECT * FROM dbo.TeamsTest"
+  );
+
+  return teams;
+}
+
+
+
+
 
 async function getTeamDetailsbyID(TEAM_ID) {
   try {
@@ -88,6 +105,8 @@ function extractRelevantData(teams_info, isPromise) {
 }
 
 
+
+exports.getAllTeams = getAllTeams;
 
 exports.getTeamDetailsbyID = getTeamDetailsbyID;
 exports.getTeamDetailsbyName = getTeamDetailsbyName;

@@ -1,14 +1,16 @@
+const Tournament = require("../../node_modules/round-robin-tournament/dist/tournament.js").default
 var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
 const games_utils = require("./utils/games_utils");
 const users_utils = require("./utils/users_utils");
 const teams_utils = require("./utils/teams_utils");
+const Tournament = require("../../node_modules/round-robin-tournament/dist/tournament.js").default
 
 
 router.use(async function (req, res, next) {
     if (req.session && req.session.user_id) {
-        DButils.execQuery("SELECT UserID FROM Admins")
+        DButils.execQuery("SELECT UserID FROM AdminsTest")
             .then((users) => {
                 if (users.find((x) => x.UserID === req.session.user_id)) {
                     req.user_id = req.session.user_id;
@@ -101,4 +103,28 @@ router.post("/:gameId/events/", async (req, res, next) => {
     }
 });
 
+router.post("/MakeLeague/", async (req, res, next) => {
+    try {
+        const teams = await teams_utils.getAllTeams();
+        const tournament = new Tournament(teams)
+        var matches = tournament.matches
+        matches=await games_utils.AddDateToGames(matches);
+        var counter=0;
+        var flag=true;
+        matches.forEach((element) => {
+            element.forEach(( match) => {  
+                if(counter>=11 && req.body.Type===1){flag=false;} 
+                if(flag){
+                     games_utils.EnterGameToDB(match[2], match[0].TeamId, match[1].TeamId, match[3], match[0].Stadium, "tmp")
+                    }     
+                 }
+                )
+                counter+=1
+              }
+              )
+              return;
+        }catch (error) {
+        next(error);
+    }
+});
 module.exports = router;
