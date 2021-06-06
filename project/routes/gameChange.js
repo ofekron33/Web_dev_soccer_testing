@@ -8,7 +8,7 @@ const teams_utils = require("./utils/teams_utils");
 
 router.use(async function (req, res, next) {
     if (req.session && req.session.user_id) {
-        DButils.execQuery("SELECT UserID FROM Admins")
+        DButils.execQuery("SELECT UserID FROM AdminsTest")
             .then((users) => {
                 if (users.find((x) => x.UserID === req.session.user_id)) {
                     req.user_id = req.session.user_id;
@@ -96,6 +96,16 @@ router.post("/:gameId/events/", async (req, res, next) => {
 
         await games_utils.AddEvent(req.params.gameId, req.body.eventType, req.body.gameDate, req.body.gameTime, req.body.inGameMinute, req.body.eventDescription);
         res.status(201).send("Game Event created");
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post("/MakeLeague/", async (req, res, next) => {
+    try {
+        const teams = await teams_utils.getAllTeams();
+        const tournament = new Tournament(teams)
+        const matches = tournament.matches
     } catch (error) {
         next(error);
     }
