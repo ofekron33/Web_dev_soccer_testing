@@ -35,8 +35,21 @@ test('acceptence test getEvent', async () => {
             "eventDescription": "yellow card for Casper Tengstedt"
         }]);
 });
-
-test('acceptence test getEvent', async () => {
+test('acceptence test getEvent', async () => {//TODO change name
     const data = await games_utils.getEvents('15616');
     expect(data).toEqual([]);
+});
+test('acceptence test getGameCheck', async () => { 
+    const data = await games_utils.getGameCheck('293','85','5');
+    expect(data).toStrictEqual([{
+        "stage": 5,
+        "homeTeam": 293,
+        "awayTeam": 85,
+    }])
+});
+
+test('acceptence test getGameCheck', async () => { 
+    const data = await games_utils.getGameCheck('850202','211','14');
+    expect(data).toEqual([]);
+
 });
