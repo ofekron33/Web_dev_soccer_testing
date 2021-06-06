@@ -814,22 +814,9 @@ components:
           minLength: 5
           type: string
           example: "123456"
-        firstName:
+        fullName:
           type: string
           example: Ofek
-        lastName:
-          type: string
-          example: Ronen
-        country:
-          type: string
-          example: Israel
-        email:
-          type: string
-          format: email
-          example: ofekron@post.bgu.ac.il
-        image_url:
-          type: string
-          format: URL
 
     Referee:
       type: object

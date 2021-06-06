@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth_utilis = require("../routes/utils/auth_utils");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
 
@@ -8,12 +9,12 @@ router.post("/Register", async (req, res, next) => {
     // parameters exists
     // valid parameters
     // username exists
-    const users = await DButils.execQuery(
-      "SELECT username FROM dbo.Users"
-    );
+    
 
-    if (users.find((x) => x.username === req.body.username))
+
+    if (!await auth_utilis.isAvilable(req.body.username))
       throw { status: 409, message: "Username taken" };
+
 
     //hash the password
     let hash_password = bcrypt.hashSync(
@@ -23,9 +24,7 @@ router.post("/Register", async (req, res, next) => {
     req.body.password = hash_password;
 
     // add the new username
-    await DButils.execQuery(
-      `INSERT INTO dbo.Users (Username, Password,FirstName,LastName,Email,Country,image_url) VALUES ('${req.body.username}', '${hash_password}','${req.body.firstName}','${req.body.lastName}','${req.body.email}','${req.body.country}','${req.body.image_url}')`
-    );
+    await auth_utilis.addUser(req.body.username, hash_password ,req.body.fullName);
     res.status(201).send("user created");
   } catch (error) {
     next(error);
@@ -34,13 +33,7 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/Login", async (req, res, next) => {
   try {
-    const user = (
-      await DButils.execQuery(
-        `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
-        
-      )
-    )[0];
-    // user = user[0];
+    const user = (await auth_utilis.getUsers(req.body.username))[0];
     console.log(user);
 
     // check that username exists & the password is correct
@@ -57,6 +50,8 @@ router.post("/Login", async (req, res, next) => {
     next(error);
   }
 });
+
+
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
