@@ -167,6 +167,21 @@ async function getCurrentStageGames(stage_num) {
   return games;
 }
 
+
+async function getCurrentStageGames(stage_num) {
+  const games = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[Games] 
+      WHERE stage=${stage_num};`
+  );
+  return games;
+}
+
+async function getCurrentStageGames(matchList, referreList) {
+  matchList.forEach(element => {
+    
+  });
+}
+
 exports.returnAllGames = returnAllGames;
 exports.isStage = isStage;
 exports.isStadium = isStadium;

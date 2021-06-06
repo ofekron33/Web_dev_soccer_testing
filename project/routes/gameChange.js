@@ -4,6 +4,7 @@ const DButils = require("./utils/DButils");
 const games_utils = require("./utils/games_utils");
 const users_utils = require("./utils/users_utils");
 const teams_utils = require("./utils/teams_utils");
+const Tournament = require("../../node_modules/round-robin-tournament/dist/tournament.js").default
 
 
 router.use(async function (req, res, next) {
