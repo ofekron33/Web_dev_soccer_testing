@@ -1,3 +1,4 @@
+const Tournament = require("../../node_modules/round-robin-tournament/dist/tournament.js").default
 var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
@@ -106,10 +107,24 @@ router.post("/MakeLeague/", async (req, res, next) => {
     try {
         const teams = await teams_utils.getAllTeams();
         const tournament = new Tournament(teams)
-        const matches = tournament.matches
-    } catch (error) {
+        var matches = tournament.matches
+        matches=await games_utils.AddDateToGames(matches);
+        var counter=0;
+        var flag=true;
+        matches.forEach((element) => {
+            element.forEach(( match) => {  
+                if(counter>=11 && req.body.Type===1){flag=false;} 
+                if(flag){
+                     games_utils.EnterGameToDB(match[2], match[0].TeamId, match[1].TeamId, match[3], match[0].Stadium, "tmp")
+                    }     
+                 }
+                )
+                counter+=1
+              }
+              )
+              return;
+        }catch (error) {
         next(error);
     }
 });
-
 module.exports = router;
