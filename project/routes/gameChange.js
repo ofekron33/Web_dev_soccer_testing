@@ -4,13 +4,15 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const games_utils = require("./utils/games_utils");
 const users_utils = require("./utils/users_utils");
+const auth_utils = require("./utils/auth_utils");
 const teams_utils = require("./utils/teams_utils");
+const league_utils = require("./utils/teams_utils");
 
 router.use(async function (req, res, next) {
     if (req.session && req.session.user_id) {
-        DButils.execQuery("SELECT UserID FROM AdminsTest")
+        DButils.execQuery("SELECT * FROM UsersTest")
             .then((users) => {
-                if (users.find((x) => x.UserID === req.session.user_id)) {
+                if (users.find((x) => x.UserID === req.session.user_id && x.isFederation === 1)) {
                     req.user_id = req.session.user_id;
                     next();
 
@@ -103,7 +105,9 @@ router.post("/:gameId/events/", async (req, res, next) => {
 
 router.post("/MakeLeague/", async (req, res, next) => {
     try {
-        var pad = function (num) { return ('00' + num).slice(-2) };
+        if (req.body.Type != 1 && req.body.Type != 2) {
+            throw { status: 400, message: "invalid algo type" };
+        }
         const teams = await teams_utils.getAllTeams();
         if (!teams || teams.length == 0) {
             throw { status: 409, message: "There are no teams in the system." };
@@ -119,8 +123,9 @@ router.post("/MakeLeague/", async (req, res, next) => {
         var flag = true;
         matches.forEach((element) => {
             element.forEach((match) => {
-                if (counter >= 11 && req.body.Type === 1) { 
-                    flag = false; }
+                if (counter >= 11 && req.body.Type === 1) {
+                    flag = false;
+                }
                 if (flag) {
                     games_utils.EnterGameToDB(match[2], match[0].TeamId, match[1].TeamId, match[3], match[0].Stadium, match.referee)
                 }
@@ -133,6 +138,23 @@ router.post("/MakeLeague/", async (req, res, next) => {
 
     }
 });
+
+router.post("/MakeReferee/:UserId", async (req, res, next) => {
+    try {
+        const userID= req.params.UserId;
+        if (!auth_utils.isAvilable(userID)){
+            throw { status: 409, message: "There is no userName with this id" };
+        }
+        if (auth_utils.isRefereeByID(userID)) {
+            throw { status: 409, message: "The id is already a Referee" };
+        }
+        league_utils.AddRefToDb(userID,)
+    res.status(201).send("Leauge Games created");
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 
 module.exports = router;

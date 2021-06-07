@@ -38,7 +38,9 @@ async function getLeagueDetails() {
 async function getReferees() {
 
   const referes = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Referees] ;`);
+    ` SELECT* FROM [dbo].[RefereesTest]
+      INNER JOIN [dbo].[UsersTest]
+      on [dbo].[UsersTest].UserID=[dbo].[RefereesTest].UserID ;`);
   const referesArr = [];
   referes.forEach(element => {
     referesArr.push(element.refName)

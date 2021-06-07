@@ -98,10 +98,20 @@ async function isStage(StageName) {
   return true;
 }
 async function isReferee(refereeName) {
-
   const referes = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Referees]
+    ` SELECT * FROM [dbo].[RefereesTest]
     WHERE refName = '${refereeName}' ;`
+  );
+  if (referes.length === 0) {
+    return false;
+  }
+  return true;
+}
+
+async function isRefereeByID(refereeID) {
+  const referes = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[RefereesTest]
+    WHERE UserID = '${refereeID}' ;`
   );
   if (referes.length === 0) {
     return false;
@@ -242,6 +252,7 @@ async function EnterGameToDB(date, homeTeam, awayTeam, stage, stadium, ref) {
 }
 
 exports.returnAllGames = returnAllGames;
+exports.isRefereeByID = isRefereeByID;
 exports.schduleReffere = schduleReffere;
 exports.isStage = isStage;
 exports.isStadium = isStadium;

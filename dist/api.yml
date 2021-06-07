@@ -115,6 +115,39 @@ paths:
         "400":
           description: There is no current league taking place
 
+  /gamechange/MakeReferee/{UserId}:
+    post:
+      tags:
+        - league; Admin
+      summary: Make League games out of current teams and referees. 
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+          example: 42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                training:
+                  type: string
+                  example: Expert Level
+                isPrimary:
+                  type: integer
+                  example: 1
+
+      responses:
+        "200":
+          description: The user has been made to be referee
+        "400":
+          description: thre was a problem
 
 
 
