@@ -29,6 +29,12 @@ test('unittest getUsers', async () => {
         }
       ])
 })
+
+test('unittest addUser allready exists', async () => {
+    const user = await auth_utils.addUser('UserTest', '1234', 'User Test');
+    const data_addUser = await auth_utils.isAvilable('UserTest');
+    expect(data_addUser).toEqual(false)
+})
 // test('unittest isAvilable', async () => {
 //     const data = await auth_utils.isAvilable('liadse1');
 //     expect(data).toEqual(false)})
