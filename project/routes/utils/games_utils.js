@@ -204,13 +204,13 @@ function getRandomInt(max) {
 
 async function AddDateToGames(matches) {
   var counter = 1;
-  var date =new Date();
-  date =   addDays(date, 50);
+  var date = new Date();
+  date = addDays(date, 50);
   matches.forEach((element) => {
     element.forEach((match) => {
-      match[2]=DateFormatter(date);
-      match[3]=counter;
-//      EnterGamesToDBHelper(date, match[0].TeamId, match[1].TeamId, counter, match[0].Stadium, match[0].referee)
+      match[2] = DateFormatter(date);
+      match[3] = counter;
+      //      EnterGamesToDBHelper(date, match[0].TeamId, match[1].TeamId, counter, match[0].Stadium, match[0].referee)
       date = addDays(date, 1);
     }
     )
@@ -237,7 +237,7 @@ async function EnterGameToDB(date, homeTeam, awayTeam, stage, stadium, ref) {
     `INSERT INTO dbo.GamesTest (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
       '${date}' , ${homeTeam}, ${awayTeam},'${stage}','${stadium}','${ref}')`
   );
-  return  added_match;
+  return added_match;
 
 }
 
@@ -255,5 +255,5 @@ exports.updateGameDetial = updateGameDetial;
 exports.getFavoriteMatchesDetails = getFavoriteMatchesDetails;
 exports.getCurrentStageGames = getCurrentStageGames;
 exports.EnterGameToDB = EnterGameToDB;
-exports.AddDateToGames=AddDateToGames;
-exports.EnterGameToDB=EnterGameToDB
+exports.AddDateToGames = AddDateToGames;
+exports.EnterGameToDB = EnterGameToDB
