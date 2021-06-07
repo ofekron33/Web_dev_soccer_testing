@@ -1,5 +1,6 @@
 const DButils = require("./DButils");
 const teams_utils = require("./teams_utils");
+const league_utils = require("./league_utils");
 
 
 async function getGameDetial(game_id) {
@@ -168,7 +169,6 @@ async function getCurrentStageGames(stage_num) {
 }
 
 
-<<<<<<< HEAD
 async function getCurrentStageGames(stage_num) {
   const games = await DButils.execQuery(
     ` SELECT * FROM [dbo].[Games] 
@@ -177,23 +177,40 @@ async function getCurrentStageGames(stage_num) {
   return games;
 }
 
-async function getCurrentStageGames(matchList, referreList) {
-  matchList.forEach(element => {
-    
-  });
+async function schduleReffere(matchList) {
+  try {
+    const reffreList = await league_utils.getReferees();
+    if (!reffreList || reffreList.length === 0) {
+      return Null;
+    }
+    matchList.forEach(StageGames => {
+      StageGames.forEach(game => {
+        var reffre_i = getRandomInt(reffreList.length);
+        game.referee = reffreList[reffre_i];
+      })
+    });
+    return matchList;
+  }
+  catch (error) {
+    console.log(error)
+    return null
+  }
 }
 
-=======
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 
 async function AddDateToGames(matches) {
   var counter = 1;
-  var date =new Date();
-  date =   addDays(date, 50);
+  var date = new Date();
+  date = addDays(date, 50);
   matches.forEach((element) => {
     element.forEach((match) => {
-      match[2]=DateFormatter(date);
-      match[3]=counter;
-//      EnterGamesToDBHelper(date, match[0].TeamId, match[1].TeamId, counter, match[0].Stadium, match[0].referee)
+      match[2] = DateFormatter(date);
+      match[3] = counter;
+      //      EnterGamesToDBHelper(date, match[0].TeamId, match[1].TeamId, counter, match[0].Stadium, match[0].referee)
       date = addDays(date, 1);
     }
     )
@@ -220,17 +237,12 @@ async function EnterGameToDB(date, homeTeam, awayTeam, stage, stadium, ref) {
     `INSERT INTO dbo.GamesTest (gameDate,homeTeam,awayTeam,stage,stadium,referee) VALUES (
       '${date}' , ${homeTeam}, ${awayTeam},'${stage}','${stadium}','${ref}')`
   );
-  return  added_match;
+  return added_match;
 
 }
 
-
-
-
-
-
->>>>>>> ofek
 exports.returnAllGames = returnAllGames;
+exports.schduleReffere = schduleReffere;
 exports.isStage = isStage;
 exports.isStadium = isStadium;
 exports.isReferee = isReferee;
@@ -243,5 +255,5 @@ exports.updateGameDetial = updateGameDetial;
 exports.getFavoriteMatchesDetails = getFavoriteMatchesDetails;
 exports.getCurrentStageGames = getCurrentStageGames;
 exports.EnterGameToDB = EnterGameToDB;
-exports.AddDateToGames=AddDateToGames;
-exports.EnterGameToDB=EnterGameToDB
+exports.AddDateToGames = AddDateToGames;
+exports.EnterGameToDB = EnterGameToDB
