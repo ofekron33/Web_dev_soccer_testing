@@ -1074,11 +1074,11 @@ components:
           minLength: 3
           maxLength: 8
           description: username conatins letters only
-          example: admin
+          example: ofek3928
         password:
           type: string
           minLength: 5
           maxLength: 10
           format: password
           description: password conatins at least one number and one special char
-          example: admin
+          example: 123456
