@@ -111,6 +111,9 @@ router.post("/MakeLeague/", async (req, res, next) => {
         matches=await games_utils.AddDateToGames(matches);
         var counter=0;
         var flag=true;
+        if(req.body.Type!=1 && req.body.Type!=2){
+            throw { status: 400, message:"invalid algo type" };
+        }
         matches.forEach((element) => {
             element.forEach(( match) => {  
                 if(counter>=11 && req.body.Type===1){flag=false;} 
