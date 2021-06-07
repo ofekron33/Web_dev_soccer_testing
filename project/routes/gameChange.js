@@ -105,9 +105,12 @@ router.post("/:gameId/events/", async (req, res, next) => {
 
 router.post("/MakeLeague/", async (req, res, next) => {
     try {
+        var pad = function (num) { return ('00' + num).slice(-2) };
+
         const teams = await teams_utils.getAllTeams();
         const tournament = new Tournament(teams)
         var matches = tournament.matches
+        matches = await games_utils.schduleReffere(matches)
         matches=await games_utils.AddDateToGames(matches);
         var counter=0;
         var flag=true;
