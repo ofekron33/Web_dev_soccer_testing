@@ -169,7 +169,6 @@ async function getCurrentStageGames(stage_num) {
 }
 
 
-<<<<<<< HEAD
 async function getCurrentStageGames(stage_num) {
   const games = await DButils.execQuery(
     ` SELECT * FROM [dbo].[Games] 
@@ -202,8 +201,6 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-<<<<<<< HEAD
-=======
 
 async function AddDateToGames(matches) {
   var counter = 1;
@@ -244,17 +241,6 @@ async function EnterGameToDB(date, homeTeam, awayTeam, stage, stadium, ref) {
 
 }
 
-
-
-
-
-
->>>>>>> ofek
-=======
-
-
-
->>>>>>> daniel
 exports.returnAllGames = returnAllGames;
 exports.schduleReffere = schduleReffere;
 exports.isStage = isStage;
