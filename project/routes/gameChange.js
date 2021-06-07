@@ -135,7 +135,6 @@ router.post("/MakeLeague/", async (req, res, next) => {
         res.status(201).send("Leauge Games created");
     } catch (error) {
         next(error);
-
     }
 });
 

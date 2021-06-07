@@ -43,7 +43,7 @@ async function getReferees() {
       on [dbo].[UsersTest].UserID=[dbo].[RefereesTest].UserID ;`);
   const referesArr = [];
   referes.forEach(element => {
-    referesArr.push(element.refName)
+    referesArr.push(element.fullname)
   });
   return referesArr;
 }
