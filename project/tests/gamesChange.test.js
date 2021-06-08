@@ -8,11 +8,11 @@ const league_utils = require("./utils/teams_utils");
 const league_utils = require("./utils/games_utils");
 jest.setTimeout(10000000);
 
-describe("test auth file", () => {
+describe("test make league", () => {
 
-    // UserTest doesnt exists ->> register successfully
-    test("login should succeed and return 200 status code", async () => {
-        const response = await request(app).post("/Register")
+    // algo invalid ->> status code 409
+    test("Make league with invalid type return 200 status code", async () => {
+        const response = await request(app).post("/MakeLeague")
         .send({
             username: 'UserTestAuthTest',
             password: '1234',

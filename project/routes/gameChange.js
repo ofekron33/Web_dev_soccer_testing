@@ -6,7 +6,7 @@ const games_utils = require("./utils/games_utils");
 const users_utils = require("./utils/users_utils");
 const auth_utils = require("./utils/auth_utils");
 const teams_utils = require("./utils/teams_utils");
-const league_utils = require("./utils/teams_utils");
+const league_utils = require("./utils/league_utils");
 
 router.use(async function (req, res, next) {
     if (req.session && req.session.user_id) {
