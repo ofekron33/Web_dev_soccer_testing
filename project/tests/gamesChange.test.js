@@ -1,11 +1,12 @@
-//these tests are for c - Login Precedure
+//these tests are for b - Game Algo
 
 
 const app = require('../main');
 var request = require('supertest');
 const DButils = require("../routes/utils/DButils");
+const league_utils = require("./utils/teams_utils");
+const league_utils = require("./utils/games_utils");
 jest.setTimeout(10000000);
-
 
 describe("test auth file", () => {
 
@@ -72,7 +73,3 @@ describe("test auth file", () => {
           );
       });
 })
-
-
-
-

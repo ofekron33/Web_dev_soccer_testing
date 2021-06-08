@@ -1,3 +1,5 @@
+//these tests are for c - Login Precedure
+
 const auth_utils = require("../routes/utils/auth_utils");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
@@ -5,12 +7,6 @@ var hash_password = bcrypt.hashSync(
     '1234',
     parseInt(process.env.bcrypt_saltRounds)
   );
-// beforeAll(async () => {
-//     await DButils.execQuery(
-//         "Delete from dbo.UsersTest"
-//       );
-//   });
-
 
 // db doesnt have a test user  - >> any username is avilable
 test('unittest isAvilable', async () => {
@@ -38,7 +34,7 @@ test('unittest getUsers', async () => {
       ])
 })
 
-
+// delete the user we added
 afterAll(async () => {
     await DButils.execQuery(
         "Delete from dbo.UsersTest where username='UserTestAuthUtils'"
