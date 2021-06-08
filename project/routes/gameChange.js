@@ -17,7 +17,7 @@ router.use(async function (req, res, next) {
                     next();
 
                 } else {
-                    res.sendStatus(401);
+                    throw { status: 401, message: "Team Cant play agianst itself." };
                 }
 
             }).catch((err) => next(err));
