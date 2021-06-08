@@ -56,15 +56,15 @@ describe("test auth file", () => {
     });
 
     //UserTest1 doesnt exists ->> login unsuccessfully
-    test("loguot", async () => {
-        const response = await request(app).post("/Logout")
-        .send({
-            username: 'UserTest1',
-            password: '1234'
+    // test("loguot", async () => {
+    //     const response = await request(app).post("/Logout")
+    //     .send({
+    //         username: 'UserTest1',
+    //         password: '1234'
 
-        })
-        expect(response.statusCode).toBe(200)
-    });
+    //     })
+    //     expect(response.statusCode).toBe(200)
+    // });
 
     afterAll(async () => {
         await DButils.execQuery(
