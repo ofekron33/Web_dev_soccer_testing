@@ -10,7 +10,7 @@ describe("test auth file", () => {
     test("login should succeed and return 200 status code", async () => {
         const response = await request(app).post("/Register")
         .send({
-            username: 'UserTest',
+            username: 'UserTestAuthTest',
             password: '1234',
             fullName: 'User Test'
 
@@ -22,7 +22,7 @@ describe("test auth file", () => {
     test("login should succeed and return 200 status code", async () => {
         const response = await request(app).post("/Register")
         .send({
-            username: 'UserTest',
+            username: 'UserTestAuthTest',
             password: '1234',
             fullName: 'User Test'
 
@@ -34,7 +34,7 @@ describe("test auth file", () => {
     test("login should succeed and return 200 status code", async () => {
         const response = await request(app).post("/Login")
         .send({
-            username: 'UserTest',
+            username: 'UserTestAuthTest',
             password: '1234'
 
         })
@@ -52,10 +52,20 @@ describe("test auth file", () => {
         expect(response.statusCode).toBe(401)
     });
 
+    //UserTest1 doesnt exists ->> login unsuccessfully
+    test("loguot", async () => {
+        const response = await request(app).post("/Logout")
+        .send({
+            username: 'UserTest1',
+            password: '1234'
+
+        })
+        expect(response).toBe("logout succeeded")
+    });
 
     afterAll(async () => {
         await DButils.execQuery(
-            "Delete from dbo.UsersTest where username='UserTest'"
+            "Delete from dbo.UsersTest where username='UserTestAuthTest'"
           );
       });
 })
