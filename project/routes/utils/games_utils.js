@@ -170,13 +170,7 @@ async function getClosestGame() {
   return games;
 }
 
-async function getCurrentStageGames(stage_num) {
-  const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games] 
-      WHERE stage=${stage_num};`
-  );
-  return games;
-}
+
 
 
 async function getCurrentStageGames(stage_num) {
