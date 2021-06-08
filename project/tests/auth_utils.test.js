@@ -41,7 +41,7 @@ test('unittest getUsers', async () => {
 
 afterAll(async () => {
     await DButils.execQuery(
-        "Delete from dbo.UsersTest where username=UserTest"
+        "Delete from dbo.UsersTest where username='UserTest'"
       );
   });
 

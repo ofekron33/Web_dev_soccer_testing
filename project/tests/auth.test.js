@@ -1,5 +1,6 @@
 const app = require('../main');
 var request = require('supertest');
+const DButils = require("../routes/utils/DButils");
 jest.setTimeout(10000000);
 
 
@@ -54,7 +55,7 @@ describe("test auth file", () => {
 
     afterAll(async () => {
         await DButils.execQuery(
-            "Delete from dbo.UsersTest where username=UserTest"
+            "Delete from dbo.UsersTest where username='UserTest'"
           );
       });
 })
