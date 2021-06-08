@@ -138,17 +138,20 @@ router.post("/MakeLeague/", async (req, res, next) => {
     }
 });
 
-router.post("/MakeReferee/:UserId", async (req, res, next) => {
+router.post("/MakeReferee/", async (req, res, next) => {
     try {
-        const userID= req.params.UserId;
-        if (!auth_utils.isAvilable(userID)){
+        const userID = req.body.userId;
+        if (! await auth_utils.isAvilable(userID)){
             throw { status: 409, message: "There is no userName with this id" };
         }
-        if (auth_utils.isRefereeByID(userID)) {
+        if (await games_utils.isRefereeByID(userID)) {
             throw { status: 409, message: "The id is already a Referee" };
         }
-        league_utils.AddRefToDb(userID,)
-    res.status(201).send("Leauge Games created");
+        if (!req.body.training || !req.body.isPrimary ){
+            throw { status: 409, message: "Some info is missing" };
+        }
+        await league_utils.AddRefToDb(userID, req.body.training, req.body.isPrimary)
+        res.status(201).send("Referee appointment was sucssful");
     } catch (error) {
         next(error);
     }

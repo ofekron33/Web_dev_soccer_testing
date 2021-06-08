@@ -33,6 +33,16 @@ async function getLeagueDetails() {
     return null
   }
 }
+async function isRefereeByID(refereeID) {
+  const referes = await DButils.execQuery(
+    ` SELECT * FROM [dbo].[RefereesTest]
+    WHERE UserID = '${refereeID}' ;`
+  );
+  if (referes.length === 0) {
+    return false;
+  }
+  return true;
+}
 
 
 async function getReferees() {
@@ -71,8 +81,18 @@ async function getStages() {
   return stadiumsArr;
 }
 
+async function AddRefToDb(UserID, training, isPrimary) {
+  const added_match = await DButils.execQuery(
+    `INSERT INTO dbo.RefereesTest VALUES (
+      '${UserID}' , '${training}', ${isPrimary})`
+  );
+  return added_match;
+
+}
 
 exports.getReferees = getReferees;
+exports.isRefereeByID = isRefereeByID;
+exports.AddRefToDb = AddRefToDb;
 exports.getStages = getStages;
 exports.getStadiums = getStadiums;
 exports.getLeagueDetails = getLeagueDetails;
