@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 //check that list from api is equal to db
 test('unittest getAllTeams', async () => {
     const teams = await teams_utils.getAllTeams();
-    console.log(teams);
     expect(teams).toEqual([
       {
         TeamId: 85,

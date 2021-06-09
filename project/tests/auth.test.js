@@ -10,7 +10,7 @@ jest.setTimeout(10000000);
 describe("test auth file", () => {
 
     // UserTest doesnt exists ->> register successfully
-    test("login should succeed and return 200 status code", async () => {
+    test("Register should succeed and return 201 status code", async () => {
         const response = await request(app).post("/Register")
         .send({
             username: 'UserTestAuthTest',
@@ -22,7 +22,7 @@ describe("test auth file", () => {
     });
 
     // UserTest exists ->> register unsuccessfully
-    test("login should succeed and return 200 status code", async () => {
+    test("Register should unsucceed and return 409 status code", async () => {
         const response = await request(app).post("/Register")
         .send({
             username: 'UserTestAuthTest',
