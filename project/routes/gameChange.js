@@ -119,6 +119,8 @@ router.post("/MakeLeague/", async (req, res, next) => {
             throw { status: 409, message: "There are no referees in the system." };
         }
         matches = await games_utils.AddDateToGames(matches);
+       // console.log(matches[0][0][2]);
+
         var counter = 0;
         var flag = true;
         matches.forEach((element) => {
@@ -141,7 +143,7 @@ router.post("/MakeLeague/", async (req, res, next) => {
 router.post("/MakeReferee/", async (req, res, next) => {
     try {
         const userID = req.body.userId;
-        if (! await auth_utils.isAvilable(userID)){
+        if (await auth_utils.isAvilableID(userID)){
             throw { status: 409, message: "There is no userName with this id" };
         }
         if (await games_utils.isRefereeByID(userID)) {

@@ -86,7 +86,6 @@ async function AddRefToDb(UserID, training, isPrimary) {
     `INSERT INTO dbo.RefereesTest VALUES (
       '${UserID}' , '${training}', ${isPrimary})`
   );
-  console.log(added_match);
   return added_match;
 
 }

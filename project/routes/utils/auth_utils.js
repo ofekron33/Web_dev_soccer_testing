@@ -26,8 +26,18 @@ async function getUsers(username) {
   return users
 }
 
+async function isAvilableID(id) {
+  const users = await DButils.execQuery(
+    "SELECT * FROM dbo.UsersTest"
+  );
 
+  if (users.find((x) => x.UserID===id)){
+    return false;
+  }
+  return true;
+}
 
 exports.isAvilable = isAvilable;
 exports.getUsers = getUsers;
 exports.addUser = addUser;
+exports.isAvilableID = isAvilableID;

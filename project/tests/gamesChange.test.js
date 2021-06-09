@@ -82,48 +82,48 @@ var testSession = null;
 //     });
 // });
 
-// describe("test make league detials type 2 ", () => {
-//     var testSession = session(app, { user_id: 87 });
-//     var games;
-//     var old_games;
-//     var teams_list
-//     var new_games;
-//     beforeAll(async () => {
-//         testSession.post('/Login')
-//             .send({ username: 'admin', password: 'admin' })
-//             .end(function (err) {
-//                 authenticatedSession = testSession;
-//             });
+describe("test make league detials type 2 ", () => {
+    var testSession = session(app, { user_id: 87 });
+    var games;
+    var old_games;
+    var teams_list
+    var new_games;
+    beforeAll(async () => {
+        testSession.post('/Login')
+            .send({ username: 'admin', password: 'admin' })
+            .end(function (err) {
+                authenticatedSession = testSession;
+            });
 
-//         old_games = await games_utils.returnAllGames();
-//         teams_list = await teams_utils.getAllTeams();
-//         await testSession.post('/gamechange/MakeLeague/')
-//             .send({
-//                 Type: 2
-//             })
-//         new_games = await games_utils.returnAllGames();
+        old_games = await games_utils.returnAllGames();
+        teams_list = await teams_utils.getAllTeams();
+        await testSession.post('/gamechange/MakeLeague/')
+            .send({
+                Type: 2
+            })
+        new_games = await games_utils.returnAllGames();
 
-//     });
+    });
 
-//     it('testing each game has Reffre', async () => {
-//         const teams_list_len = teams_list.length;
-//         const team_add_len = new_games.length - old_games.length;
-//         team_add_len.valueOf(teams_list_len * (teams_list_len - 1) )
-//     });
+    it('testing each game has Reffre', async () => {
+        const teams_list_len = teams_list.length;
+        const team_add_len = new_games.length - old_games.length;
+        team_add_len.valueOf(teams_list_len * (teams_list_len - 1) )
+    });
 
 
-//     it('testing each has date', async () => {
-//         const teams_list_len = teams_list.length;
-//         const team_add_len = new_games.length - old_games.length;
-//         team_add_len.valueOf((teams_list_len * (teams_list_len - 1) / 2))
-//     });
+    it('testing each has date', async () => {
+        const teams_list_len = teams_list.length;
+        const team_add_len = new_games.length - old_games.length;
+        team_add_len.valueOf((teams_list_len * (teams_list_len - 1) / 2))
+    });
 
-//     it('testing each has stadium and hes on of them home stadium', async () => {
-//         const teams_list_len = teams_list.length;
-//         const team_add_len = new_games.length - old_games.length;
-//         team_add_len.valueOf((teams_list_len * (teams_list_len - 1) / 2))
-//     });
-// });
+    it('testing each has stadium and hes on of them home stadium', async () => {
+        const teams_list_len = teams_list.length;
+        const team_add_len = new_games.length - old_games.length;
+        team_add_len.valueOf((teams_list_len * (teams_list_len - 1) / 2))
+    });
+});
 
 
     //     authenticatedSession.post('/gamechange/MakeLeague/')
@@ -201,7 +201,7 @@ describe("test make referee with all correct ", () => {
             })
             missingTest =  await testSession.post('/gamechange/MakeReferee/')
             .send({
-                userId: 16,
+                userId: 17,
                 training: "Expert Level"
             })
             refferes = await DButils.execQuery("select * from dbo.RefereesTest where UserID=16")
@@ -221,6 +221,9 @@ describe("test make referee with all correct ", () => {
     afterAll(async () => {
         await DButils.execQuery(
             "Delete from dbo.RefereesTest where UserID=16"
+          );
+          await DButils.execQuery(
+            "Delete from dbo.RefereesTest where UserID=17"
           );
       });
 });
