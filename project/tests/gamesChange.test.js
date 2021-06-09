@@ -88,19 +88,28 @@ describe("test make referee with all correct ", () => {
                 userId: 17,
                 training: "Expert Level"
             })
+            successTest =  await testSession.post('/gamechange/MakeReferee/')
+            .send({
+                userId: 207,
+                training: "Expert Level",
+                isPrimary: 1
+            })
             refferes = await DButils.execQuery("select * from dbo.RefereesTest where UserID=16")
     });
 
-    it('testing each game has Referee', async () => {
+    it('testing add User Referee', async () => {
        expect(isAvilableTest.statusCode).toEqual(409); 
     });
 
-    it('testing each game has Referee', async () => {
+    it('testing added Referree only once', async () => {
         expect(isRefereeByIDTest.statusCode).toEqual(409);
      });
 
      it('testing each game has Referee', async () => {
         expect(missingTest.statusCode).toEqual(409);
+     });
+     it('testing each game has Referee', async () => {
+        expect(successTest.statusCode).toEqual(201);
      });
     afterAll(async () => {
         await DButils.execQuery(
@@ -108,6 +117,9 @@ describe("test make referee with all correct ", () => {
           );
           await DButils.execQuery(
             "Delete from dbo.RefereesTest where UserID=17"
+          );
+          await DButils.execQuery(
+            "Delete from dbo.RefereesTest where UserID=207"
           );
       });
 });
