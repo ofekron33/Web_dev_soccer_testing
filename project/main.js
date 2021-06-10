@@ -45,7 +45,7 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
-const port = process.env.PORT || "3000";
+//const port = process.env.PORT || "3000";
 
 const auth = require("./routes/auth");
 const users = require("./routes/users");
@@ -90,16 +90,18 @@ app.use("/coach", coach);
 app.use(auth);
 
 app.use(function (err, req, res, next) {
-  console.error(err);
+  //console.error(err);
   res.status(err.status || 500).send(err.message);
 });
 
-const server = app.listen(port, () => {
-  console.log(`Server listen on port ${port}`);
-});
+// const server = app.listen(port, () => {
+//   console.log(`Server listen on port ${port}`);
+// });
 
 // process.on("SIGINT", function () {
 //   if (server) {
 //     server.close(() => console.log("server closed"));
 //   }
 // });
+
+module.exports = app;

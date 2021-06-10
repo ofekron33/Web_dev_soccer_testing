@@ -136,7 +136,7 @@ async function isStadium(StadiumName) {
 async function returnGamesByTeamID(teamID) {
 
   const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games]
+    ` SELECT * FROM [dbo].[GamesTest]
     WHERE (homeTeam = ${teamID} or awayTeam = ${teamID}) ;`
   );
 
@@ -149,7 +149,7 @@ async function returnGamesByTeamID(teamID) {
 
 async function returnAllGames() {
   const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games] ;`
+    ` SELECT * FROM [dbo].[GamesTest] ;`
   );
   return games;
 }
@@ -162,7 +162,7 @@ async function getClosestGame() {
     pad(date.getUTCMonth() + 1) + '-' +
     pad(date.getUTCDate())
   const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games] 
+    ` SELECT * FROM [dbo].[GamesTest]
       WHERE gameDate>'${date}'
       ;`
   );
@@ -170,18 +170,12 @@ async function getClosestGame() {
   return games;
 }
 
-async function getCurrentStageGames(stage_num) {
-  const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games] 
-      WHERE stage=${stage_num};`
-  );
-  return games;
-}
+
 
 
 async function getCurrentStageGames(stage_num) {
   const games = await DButils.execQuery(
-    ` SELECT * FROM [dbo].[Games] 
+    ` SELECT * FROM [dbo].[GamesTest]
       WHERE stage=${stage_num};`
   );
   return games;
@@ -267,4 +261,6 @@ exports.getFavoriteMatchesDetails = getFavoriteMatchesDetails;
 exports.getCurrentStageGames = getCurrentStageGames;
 exports.EnterGameToDB = EnterGameToDB;
 exports.AddDateToGames = AddDateToGames;
-exports.EnterGameToDB = EnterGameToDB
+exports.EnterGameToDB = EnterGameToDB;
+exports.addDays = addDays;
+exports.DateFormatter = DateFormatter;
