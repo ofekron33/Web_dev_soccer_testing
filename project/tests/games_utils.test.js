@@ -2,6 +2,7 @@ const games_utils = require("../routes/utils/games_utils");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
 const league_utils = require("../routes/utils/league_utils");
+jest.setTimeout(10000000);
 
 test('unittest addDays', async () => {
     const date = games_utils.addDays(new Date(2021,0,1), 365);

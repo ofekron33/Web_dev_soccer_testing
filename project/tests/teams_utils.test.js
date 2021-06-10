@@ -1,6 +1,7 @@
 const teams_utils = require("../routes/utils/teams_utils");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
+jest.setTimeout(10000000);
 
 //check that list from api is equal to db
 test('unittest getAllTeams', async () => {

@@ -3,6 +3,9 @@
 const auth_utils = require("../routes/utils/auth_utils");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
+jest.setTimeout(10000000);
+
+
 var hash_password = bcrypt.hashSync(
     '1234',
     parseInt(process.env.bcrypt_saltRounds)
