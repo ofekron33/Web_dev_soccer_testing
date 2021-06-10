@@ -10,7 +10,8 @@ var testSession = null;
 
 
 describe("test Make leauge ", () => {
-    describe("test make league detials type 1 ", () => {
+
+    describe("test make league detials type 2", () => {
         var testSession = session(app, { user_id: 87 });
         var games;
         var old_games;
@@ -31,7 +32,7 @@ describe("test Make leauge ", () => {
             teams_list = await teams_utils.getAllTeams();
             Respone = await testSession.post('/gamechange/MakeLeague/')
                 .send({
-                    Type: 1
+                    Type: 2
                 })
             new_games = await games_utils.returnAllGames();
             team_add_len1 = new_games.length - old_games.length;
@@ -40,7 +41,7 @@ describe("test Make leauge ", () => {
 
                 games.forEach((match1) => {
                     let sub1 = match1.referee;
-                    if (!sub1 || sub1 === "undefined") {
+                    if (!sub1 || sub1=== "undefined") {
                         Ref = false;
                     }
                     if (!match1.stadium || match1.stadium === "undefined") {
@@ -57,9 +58,9 @@ describe("test Make leauge ", () => {
 
         it('testing number of games', async () => {
             teams_list = await teams_utils.getAllTeams();
+
             const teams_list_len1 = teams_list.length;
-            
-            const needTobeNumber1 = (teams_list_len1 * (teams_list_len1 - 1)) / 2;
+            const needTobeNumber1 = teams_list_len1 * (teams_list_len1 - 1);
             expect(team_add_len1).toBe(needTobeNumber1);
         });
 
@@ -72,7 +73,6 @@ describe("test Make leauge ", () => {
         })
 
     });
-
 
     /// liad 
 
